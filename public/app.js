@@ -56,20 +56,17 @@ function toast(msg, type = 'info') {
 //  NAVIGATION
 // ══════════════════════════════════════════════════
 function navigate(page) {
-    // Hide all pages
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    // Remove active from nav
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
 
     const pageEl = document.getElementById(`page-${page}`);
     if (!pageEl) return;
     pageEl.classList.add('active');
     state.currentPage = page;
 
-    const navLink = document.querySelector(`[data-page="${page}"]`);
+    const navLink = document.querySelector(`.sb-link[data-page="${page}"]`);
     if (navLink) navLink.classList.add('active');
 
-    // Load page data
     switch (page) {
         case 'dashboard': loadDashboard(); break;
         case 'journal': loadJournal(); break;
@@ -80,8 +77,6 @@ function navigate(page) {
         case 'new-trade': initTradeForm(); break;
     }
 
-    // Close mobile sidebar
-    document.getElementById('sidebar').classList.remove('open');
     window.scrollTo(0, 0);
 }
 
@@ -132,39 +127,41 @@ function tradeInfoHtml(t) {
 function renderStats(s) {
     if (!s || s.empty) {
         document.getElementById('stat-winrate').textContent = '—%';
-        document.getElementById('stat-trades').textContent = '0 trades total';
+        document.getElementById('stat-trades').textContent = '0 total trade';
         document.getElementById('stat-pnl').textContent = '$0.00';
-        document.getElementById('stat-avg-pnl').textContent = 'avg $0.00/trade';
+        document.getElementById('stat-avg-pnl').textContent = 'rata-rata $0.00/trade';
         document.getElementById('stat-streak').textContent = '—';
-        document.getElementById('stat-streak-type').textContent = 'No trades yet';
+        document.getElementById('stat-streak-type').textContent = 'Belum ada trade';
         document.getElementById('stat-wl').textContent = '— / — / —';
         document.getElementById('sidebar-winrate').textContent = '—%';
-        document.getElementById('sidebar-streak').textContent = '0 trades';
+        document.getElementById('sidebar-streak').textContent = '0 trade';
         return;
     }
 
     const wr = parseFloat(s.winrate);
     animateCount('stat-winrate', 0, wr, 1000, v => `${v.toFixed(1)}%`);
-    document.getElementById('stat-trades').textContent = `${s.total} trades total`;
+    document.getElementById('stat-trades').textContent = `${s.total} total trade`;
     document.getElementById('winrate-bar').style.width = `${wr}%`;
 
     const pnl = parseFloat(s.totalPnL);
     document.getElementById('stat-pnl').textContent = `${pnl >= 0 ? '+' : ''}$${Math.abs(pnl).toFixed(2)}`;
     document.getElementById('stat-pnl').style.color = pnl >= 0 ? 'var(--green)' : 'var(--red)';
-    document.getElementById('stat-avg-pnl').textContent = `avg ${s.avgPnL >= 0 ? '+' : ''}$${Math.abs(s.avgPnL).toFixed(2)}/trade`;
+    document.getElementById('stat-avg-pnl').textContent = `rata-rata ${s.avgPnL >= 0 ? '+' : ''}$${Math.abs(s.avgPnL).toFixed(2)}/trade`;
 
     const streak = s.currentStreak;
     const sType = s.streakType;
     document.getElementById('stat-streak').textContent = streak > 0 ? `${streak} 🔥` : '—';
-    document.getElementById('stat-streak-type').textContent = sType === 'WIN' ? `WIN Streak` :
-        sType === 'LOSS' ? `LOSS Streak` : '—';
+    document.getElementById('stat-streak-type').textContent = sType === 'WIN' ? `Streak MENANG` :
+        sType === 'LOSS' ? `Streak KALAH` : '—';
     document.getElementById('stat-streak').style.color = sType === 'WIN' ? 'var(--green)' : sType === 'LOSS' ? 'var(--red)' : 'var(--text2)';
 
     document.getElementById('stat-wl').textContent = `${s.wins} / ${s.losses} / ${s.breakevens}`;
     document.getElementById('stat-rr').textContent = `avg R: ${s.avgRMultiple ? s.avgRMultiple.toFixed(2) : '—'}`;
 
     document.getElementById('sidebar-winrate').textContent = `${wr}%`;
-    document.getElementById('sidebar-streak').textContent = `${s.total} trades`;
+    document.getElementById('sidebar-streak').textContent = `${s.total} total trade`;
+    const sbBar = document.getElementById('sb-wr-bar');
+    if (sbBar) sbBar.style.width = `${Math.min(wr, 100)}%`;
 }
 
 function renderRecentTrades(trades) {
@@ -1107,26 +1104,48 @@ function bindEvents() {
     // Tutorial events
     initTutorialEvents();
 
-    // Nav links
-    document.querySelectorAll('.nav-link').forEach(link => {
+    // Nav links (new .sb-link class)
+    document.querySelectorAll('.sb-link').forEach(link => {
         link.addEventListener('click', e => {
             e.preventDefault();
             navigate(link.dataset.page);
+            // Close mobile sidebar
+            document.getElementById('sidebar').classList.remove('mob-open');
+            document.getElementById('sidebar-overlay').classList.remove('show');
         });
     });
 
+    // Sidebar collapse button
+    const collapseBtn = document.getElementById('sb-collapse-btn');
+    if (collapseBtn) {
+        collapseBtn.addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            const app = document.getElementById('app');
+            sidebar.classList.toggle('collapsed');
+            app.classList.toggle('sidebar-mini');
+        });
+    }
+
     // Mobile menu
     const menuToggle = document.getElementById('menu-toggle');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebar').classList.toggle('mob-open');
+            sidebarOverlay.classList.toggle('show');
+        });
+    }
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('mob-open');
+            sidebarOverlay.classList.remove('show');
         });
     }
 
     // Logout
     document.getElementById('logout-btn').addEventListener('click', async () => {
         await api.post('/auth/logout');
-        window.location.reload();
+        window.location.href = '/';
     });
 
     document.getElementById('settings-logout').addEventListener('click', async () => {
