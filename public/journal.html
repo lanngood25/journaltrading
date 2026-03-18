@@ -429,8 +429,20 @@
                             <div class="form-group">
                                 <label>Pair *</label>
                                 <select id="f-pair" required>
-                                    <option value="">Pilih Pair</option>
-                                    <optgroup label="Forex">
+                                    <option value="">Pilih Pair / Instrumen</option>
+
+                                    <optgroup label="🇮🇩 Rupiah Indonesia (IDR) — Pasangan Utama">
+                                        <option>USDIDR</option>
+                                        <option>EURIDR</option>
+                                        <option>GBPIDR</option>
+                                        <option>JPYIDR</option>
+                                        <option>AUDIDR</option>
+                                        <option>SGDIDR</option>
+                                        <option>CNHIDR</option>
+                                        <option>MYRIDR</option>
+                                    </optgroup>
+
+                                    <optgroup label="⭐ Forex Paling Populer">
                                         <option>XAUUSD</option>
                                         <option>EURUSD</option>
                                         <option>GBPUSD</option>
@@ -441,38 +453,157 @@
                                         <option>USDCAD</option>
                                         <option>GBPJPY</option>
                                         <option>EURJPY</option>
-                                        <option>EURGBP</option>
-                                        <option>AUDJPY</option>
-                                        <option>GBPCAD</option>
-                                        <option>EURAUD</option>
-                                        <option>CADJPY</option>
-                                        <option>CHFJPY</option>
-                                        <option>EURNZD</option>
-                                        <option>GBPAUD</option>
                                     </optgroup>
-                                    <optgroup label="Indeks">
-                                        <option>US30</option>
-                                        <option>NAS100</option>
-                                        <option>SPX500</option>
-                                        <option>GER40</option>
-                                        <option>UK100</option>
-                                        <option>JPN225</option>
-                                        <option>AUS200</option>
+
+                                    <optgroup label="🌏 Asia Pasifik">
+                                        <option>USDJPY — Dolar AS / Yen Jepang</option>
+                                        <option>AUDUSD — Dolar Australia / Dolar AS</option>
+                                        <option>NZDUSD — Dolar NZ / Dolar AS</option>
+                                        <option>USDSGD — Dolar AS / Dolar Singapura</option>
+                                        <option>USDCNH — Dolar AS / Yuan China</option>
+                                        <option>USDHKD — Dolar AS / Dolar Hong Kong</option>
+                                        <option>USDKRW — Dolar AS / Won Korea</option>
+                                        <option>USDTWD — Dolar AS / Dolar Taiwan</option>
+                                        <option>USDTHB — Dolar AS / Baht Thailand</option>
+                                        <option>USDMYR — Dolar AS / Ringgit Malaysia</option>
+                                        <option>USDPHP — Dolar AS / Peso Filipina</option>
+                                        <option>USDVND — Dolar AS / Dong Vietnam</option>
+                                        <option>AUDJPY — Dolar Australia / Yen Jepang</option>
+                                        <option>NZDJPY — Dolar NZ / Yen Jepang</option>
+                                        <option>SGDJPY — Dolar Singapura / Yen Jepang</option>
+                                        <option>AUDNZD — Dolar Australia / Dolar NZ</option>
+                                        <option>AUDCAD — Dolar Australia / Dolar Kanada</option>
+                                        <option>AUDCHF — Dolar Australia / Franc Swiss</option>
                                     </optgroup>
-                                    <optgroup label="Kripto">
-                                        <option>BTCUSD</option>
-                                        <option>ETHUSD</option>
-                                        <option>BNBUSD</option>
-                                        <option>SOLUSDT</option>
-                                        <option>XRPUSD</option>
+
+                                    <optgroup label="🌍 Eropa">
+                                        <option>EURUSD — Euro / Dolar AS</option>
+                                        <option>GBPUSD — Poundsterling / Dolar AS</option>
+                                        <option>USDCHF — Dolar AS / Franc Swiss</option>
+                                        <option>EURGBP — Euro / Poundsterling</option>
+                                        <option>EURJPY — Euro / Yen Jepang</option>
+                                        <option>GBPJPY — Poundsterling / Yen Jepang</option>
+                                        <option>EURCHF — Euro / Franc Swiss</option>
+                                        <option>GBPCHF — Poundsterling / Franc Swiss</option>
+                                        <option>EURAUD — Euro / Dolar Australia</option>
+                                        <option>EURCAD — Euro / Dolar Kanada</option>
+                                        <option>EURNZD — Euro / Dolar NZ</option>
+                                        <option>GBPAUD — Poundsterling / Dolar Australia</option>
+                                        <option>GBPCAD — Poundsterling / Dolar Kanada</option>
+                                        <option>GBPNZD — Poundsterling / Dolar NZ</option>
+                                        <option>CHFJPY — Franc Swiss / Yen Jepang</option>
+                                        <option>USDSEK — Dolar AS / Krona Swedia</option>
+                                        <option>USDNOK — Dolar AS / Krone Norwegia</option>
+                                        <option>USDDKK — Dolar AS / Krone Denmark</option>
+                                        <option>USDPLN — Dolar AS / Zloty Polandia</option>
+                                        <option>USDCZK — Dolar AS / Koruna Ceko</option>
+                                        <option>USDHUF — Dolar AS / Forint Hungaria</option>
+                                        <option>USDRON — Dolar AS / Leu Romania</option>
+                                        <option>EURPLN — Euro / Zloty Polandia</option>
+                                        <option>EURSEK — Euro / Krona Swedia</option>
+                                        <option>EURNOK — Euro / Krone Norwegia</option>
+                                        <option>EURDKK — Euro / Krone Denmark</option>
+                                        <option>EURHUF — Euro / Forint Hungaria</option>
+                                        <option>EURCZK — Euro / Koruna Ceko</option>
+                                        <option>EURRUB — Euro / Rubel Rusia</option>
+                                        <option>USDRUB — Dolar AS / Rubel Rusia</option>
+                                        <option>USDTRY — Dolar AS / Lira Turki</option>
+                                        <option>EURTRY — Euro / Lira Turki</option>
                                     </optgroup>
-                                    <optgroup label="Komoditas">
-                                        <option>XAGUSD</option>
-                                        <option>USOIL</option>
-                                        <option>UKOIL</option>
-                                        <option>NATGAS</option>
+
+                                    <optgroup label="🌎 Amerika">
+                                        <option>USDCAD — Dolar AS / Dolar Kanada</option>
+                                        <option>USDMXN — Dolar AS / Peso Meksiko</option>
+                                        <option>USDBRL — Dolar AS / Real Brasil</option>
+                                        <option>USDCOP — Dolar AS / Peso Kolombia</option>
+                                        <option>USDCLP — Dolar AS / Peso Chili</option>
+                                        <option>USDARS — Dolar AS / Peso Argentina</option>
+                                        <option>USDPEN — Dolar AS / Sol Peru</option>
+                                        <option>CADJPY — Dolar Kanada / Yen Jepang</option>
+                                        <option>CADCHF — Dolar Kanada / Franc Swiss</option>
+                                    </optgroup>
+
+                                    <optgroup label="🌍 Timur Tengah & Afrika">
+                                        <option>USDSAR — Dolar AS / Riyal Saudi</option>
+                                        <option>USDAED — Dolar AS / Dirham UAE</option>
+                                        <option>USDQAR — Dolar AS / Riyal Qatar</option>
+                                        <option>USDKWD — Dolar AS / Dinar Kuwait</option>
+                                        <option>USDBHD — Dolar AS / Dinar Bahrain</option>
+                                        <option>USDILS — Dolar AS / Shekel Israel</option>
+                                        <option>USDZAR — Dolar AS / Rand Afrika Selatan</option>
+                                        <option>USDEGP — Dolar AS / Pound Mesir</option>
+                                        <option>USDNGN — Dolar AS / Naira Nigeria</option>
+                                        <option>USDKES — Dolar AS / Shilling Kenya</option>
+                                        <option>EURZAR — Euro / Rand Afrika Selatan</option>
+                                        <option>GBPZAR — Poundsterling / Rand Afrika Selatan</option>
+                                    </optgroup>
+
+                                    <optgroup label="📈 Indeks Saham Global">
+                                        <option>US30 — Dow Jones</option>
+                                        <option>NAS100 — Nasdaq 100</option>
+                                        <option>SPX500 — S&P 500</option>
+                                        <option>GER40 — DAX Jerman</option>
+                                        <option>UK100 — FTSE 100 Inggris</option>
+                                        <option>JPN225 — Nikkei 225</option>
+                                        <option>AUS200 — ASX 200 Australia</option>
+                                        <option>FRA40 — CAC 40 Prancis</option>
+                                        <option>EU50 — Euro Stoxx 50</option>
+                                        <option>HK50 — Hang Seng</option>
+                                        <option>CHN50 — China A50</option>
+                                        <option>SG30 — Straits Times Singapura</option>
+                                        <option>IDXCOMPOSITE — IHSG Indonesia</option>
+                                        <option>TWINDEX — Taiwan Weighted</option>
+                                        <option>KOSPI — Korea Selatan</option>
+                                    </optgroup>
+
+                                    <optgroup label="₿ Kripto">
+                                        <option>BTCUSD — Bitcoin / Dolar AS</option>
+                                        <option>ETHUSD — Ethereum / Dolar AS</option>
+                                        <option>BNBUSD — BNB / Dolar AS</option>
+                                        <option>SOLUSD — Solana / Dolar AS</option>
+                                        <option>XRPUSD — Ripple / Dolar AS</option>
+                                        <option>ADAUSD — Cardano / Dolar AS</option>
+                                        <option>DOTUSD — Polkadot / Dolar AS</option>
+                                        <option>AVAXUSD — Avalanche / Dolar AS</option>
+                                        <option>MATICUSD — Polygon / Dolar AS</option>
+                                        <option>LINKUSD — Chainlink / Dolar AS</option>
+                                        <option>UNIUSD — Uniswap / Dolar AS</option>
+                                        <option>LTCUSD — Litecoin / Dolar AS</option>
+                                        <option>DOGUSD — Dogecoin / Dolar AS</option>
+                                        <option>BTCIDR — Bitcoin / Rupiah Indonesia</option>
+                                        <option>ETHIDR — Ethereum / Rupiah Indonesia</option>
+                                    </optgroup>
+
+                                    <optgroup label="🥇 Logam Mulia & Komoditas">
+                                        <option>XAUUSD — Emas / Dolar AS</option>
+                                        <option>XAGUSD — Perak / Dolar AS</option>
+                                        <option>XPTUSD — Platinum / Dolar AS</option>
+                                        <option>XPDUSD — Palladium / Dolar AS</option>
+                                        <option>USOIL — Minyak Mentah WTI</option>
+                                        <option>UKOIL — Minyak Mentah Brent</option>
+                                        <option>NATGAS — Gas Alam</option>
+                                        <option>COPPER — Tembaga</option>
+                                        <option>WHEAT — Gandum</option>
+                                        <option>CORN — Jagung</option>
+                                        <option>SOYBEAN — Kedelai</option>
+                                        <option>SUGAR — Gula</option>
+                                        <option>COFFEE — Kopi</option>
+                                        <option>COCOA — Kakao</option>
+                                        <option>COTTON — Kapas</option>
+                                        <option>PALMOIL — Minyak Sawit (CPO)</option>
+                                        <option>RUBBER — Karet</option>
+                                        <option>NICKEL — Nikel</option>
+                                        <option>TIN — Timah</option>
+                                        <option>COAL — Batu Bara</option>
+                                    </optgroup>
+
+                                    <optgroup label="✏️ Lainnya / Kustom">
+                                        <option value="CUSTOM">✏️ Ketik Pair Sendiri...</option>
                                     </optgroup>
                                 </select>
+                                <!-- Input custom pair muncul saat pilih "Ketik Pair Sendiri" -->
+                                <input type="text" id="f-pair-custom" placeholder="Contoh: XAUEUR, BTCETH, SANDUSDT..."
+                                    style="display:none; margin-top:6px;" maxlength="30">
                             </div>
                             <div class="form-group">
                                 <label>Arah *</label>
@@ -903,8 +1034,78 @@
                         <div class="settings-divider"></div>
                         <form id="settings-form">
                             <div class="form-group">
-                                <label>Saldo Akun ($)</label>
-                                <input type="number" id="s-balance" step="any" placeholder="10000">
+                                <label>💱 Mata Uang Akun</label>
+                                <select id="s-currency">
+                                    <optgroup label="🇮🇩 Asia Tenggara">
+                                        <option value="IDR|Rp|Rupiah Indonesia">IDR — Rp — Rupiah Indonesia 🇮🇩
+                                        </option>
+                                        <option value="SGD|S$|Dolar Singapura">SGD — S$ — Dolar Singapura 🇸🇬</option>
+                                        <option value="MYR|RM|Ringgit Malaysia">MYR — RM — Ringgit Malaysia 🇲🇾
+                                        </option>
+                                        <option value="THB|฿|Baht Thailand">THB — ฿ — Baht Thailand 🇹🇭</option>
+                                        <option value="PHP|₱|Peso Filipina">PHP — ₱ — Peso Filipina 🇵🇭</option>
+                                        <option value="VND|₫|Dong Vietnam">VND — ₫ — Dong Vietnam 🇻🇳</option>
+                                    </optgroup>
+                                    <optgroup label="🌏 Asia Timur & Selatan">
+                                        <option value="JPY|¥|Yen Jepang">JPY — ¥ — Yen Jepang 🇯🇵</option>
+                                        <option value="CNY|¥|Yuan China">CNY — ¥ — Yuan China 🇨🇳</option>
+                                        <option value="KRW|₩|Won Korea">KRW — ₩ — Won Korea 🇰🇷</option>
+                                        <option value="HKD|HK$|Dolar Hong Kong">HKD — HK$ — Dolar Hong Kong 🇭🇰
+                                        </option>
+                                        <option value="TWD|NT$|Dolar Taiwan">TWD — NT$ — Dolar Taiwan 🇹🇼</option>
+                                        <option value="INR|₹|Rupee India">INR — ₹ — Rupee India 🇮🇳</option>
+                                        <option value="PKR|₨|Rupee Pakistan">PKR — ₨ — Rupee Pakistan 🇵🇰</option>
+                                        <option value="BDT|৳|Taka Bangladesh">BDT — ৳ — Taka Bangladesh 🇧🇩</option>
+                                    </optgroup>
+                                    <optgroup label="⭐ Amerika & Oseania">
+                                        <option value="USD|$|Dolar Amerika Serikat" selected>USD — $ — Dolar AS 🇺🇸
+                                        </option>
+                                        <option value="CAD|CA$|Dolar Kanada">CAD — CA$ — Dolar Kanada 🇨🇦</option>
+                                        <option value="AUD|A$|Dolar Australia">AUD — A$ — Dolar Australia 🇦🇺</option>
+                                        <option value="NZD|NZ$|Dolar Selandia Baru">NZD — NZ$ — Dolar Selandia Baru 🇳🇿
+                                        </option>
+                                        <option value="MXN|Mex$|Peso Meksiko">MXN — Mex$ — Peso Meksiko 🇲🇽</option>
+                                        <option value="BRL|R$|Real Brasil">BRL — R$ — Real Brasil 🇧🇷</option>
+                                        <option value="ARS|$|Peso Argentina">ARS — $ — Peso Argentina 🇦🇷</option>
+                                        <option value="CLP|CL$|Peso Chili">CLP — CL$ — Peso Chili 🇨🇱</option>
+                                    </optgroup>
+                                    <optgroup label="🌍 Eropa">
+                                        <option value="EUR|€|Euro">EUR — € — Euro 🇪🇺</option>
+                                        <option value="GBP|£|Poundsterling Inggris">GBP — £ — Poundsterling Inggris 🇬🇧
+                                        </option>
+                                        <option value="CHF|Fr|Franc Swiss">CHF — Fr — Franc Swiss 🇨🇭</option>
+                                        <option value="SEK|kr|Krona Swedia">SEK — kr — Krona Swedia 🇸🇪</option>
+                                        <option value="NOK|kr|Krone Norwegia">NOK — kr — Krone Norwegia 🇳🇴</option>
+                                        <option value="DKK|kr|Krone Denmark">DKK — kr — Krone Denmark 🇩🇰</option>
+                                        <option value="PLN|zł|Zloty Polandia">PLN — zł — Zloty Polandia 🇵🇱</option>
+                                        <option value="CZK|Kč|Koruna Ceko">CZK — Kč — Koruna Ceko 🇨🇿</option>
+                                        <option value="HUF|Ft|Forint Hungaria">HUF — Ft — Forint Hungaria 🇭🇺</option>
+                                        <option value="RUB|₽|Rubel Rusia">RUB — ₽ — Rubel Rusia 🇷🇺</option>
+                                        <option value="TRY|₺|Lira Turki">TRY — ₺ — Lira Turki 🇹🇷</option>
+                                    </optgroup>
+                                    <optgroup label="🌍 Timur Tengah & Afrika">
+                                        <option value="SAR|﷼|Riyal Saudi">SAR — ﷼ — Riyal Saudi 🇸🇦</option>
+                                        <option value="AED|د.إ|Dirham UAE">AED — د.إ — Dirham UAE 🇦🇪</option>
+                                        <option value="QAR|﷼|Riyal Qatar">QAR — ﷼ — Riyal Qatar 🇶🇦</option>
+                                        <option value="KWD|KD|Dinar Kuwait">KWD — KD — Dinar Kuwait 🇰🇼</option>
+                                        <option value="ILS|₪|Shekel Israel">ILS — ₪ — Shekel Israel 🇮🇱</option>
+                                        <option value="ZAR|R|Rand Afrika Selatan">ZAR — R — Rand Afrika Selatan 🇿🇦
+                                        </option>
+                                        <option value="EGP|E£|Pound Mesir">EGP — E£ — Pound Mesir 🇪🇬</option>
+                                        <option value="NGN|₦|Naira Nigeria">NGN — ₦ — Naira Nigeria 🇳🇬</option>
+                                    </optgroup>
+                                </select>
+                                <div class="currency-preview" id="currency-preview">
+                                    <span id="currency-flag">🇺🇸</span>
+                                    <span id="currency-info">USD · $ · Dolar Amerika Serikat</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Saldo Akun <span id="s-balance-label">(USD)</span></label>
+                                <div class="input-with-prefix">
+                                    <span class="input-prefix" id="s-balance-prefix">$</span>
+                                    <input type="number" id="s-balance" step="any" placeholder="10000">
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Risiko per Trade (%)</label>

@@ -144,9 +144,9 @@ function renderStats(s) {
     document.getElementById('winrate-bar').style.width = `${wr}%`;
 
     const pnl = parseFloat(s.totalPnL);
-    document.getElementById('stat-pnl').textContent = `${pnl >= 0 ? '+' : ''}$${Math.abs(pnl).toFixed(2)}`;
+    document.getElementById('stat-pnl').textContent = fmtMoney(pnl, true);
     document.getElementById('stat-pnl').style.color = pnl >= 0 ? 'var(--green)' : 'var(--red)';
-    document.getElementById('stat-avg-pnl').textContent = `rata-rata ${s.avgPnL >= 0 ? '+' : ''}$${Math.abs(s.avgPnL).toFixed(2)}/trade`;
+    document.getElementById('stat-avg-pnl').textContent = `rata-rata ${fmtMoney(s.avgPnL, true)}/trade`;
 
     const streak = s.currentStreak;
     const sType = s.streakType;
@@ -180,7 +180,7 @@ function renderRecentTrades(trades) {
       </div>
       <div class="rt-dir ${t.direction.toLowerCase()}">${t.direction}</div>
       <div>
-        <div class="rt-pnl ${(t.pnl || 0) >= 0 ? 'pos' : 'neg'}">${(t.pnl || 0) >= 0 ? '+' : ''}$${(t.pnl || 0).toFixed(2)}</div>
+        <div class="rt-pnl ${(t.pnl || 0) >= 0 ? 'pos' : 'neg'}">${fmtMoney(t.pnl || 0, true)}</div>
         <div style="text-align:right"><span class="result-badge ${t.result}">${t.result}</span></div>
       </div>
     </div>
@@ -709,6 +709,24 @@ function podiumItem(u, rank) {
 // ══════════════════════════════════════════════════
 //  SETTINGS
 // ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+//  CURRENCY HELPERS
+// ══════════════════════════════════════════════════
+function getCurrency() {
+    const raw = state.user?.currency || 'USD|$|Dolar Amerika Serikat';
+    const parts = raw.split('|');
+    return { code: parts[0] || 'USD', symbol: parts[1] || '$', name: parts[2] || 'Dolar AS' };
+}
+
+function fmtMoney(amount, showSign = false) {
+    const { symbol, code } = getCurrency();
+    const abs = Math.abs(amount);
+    // Format angka dengan pemisah ribuan sesuai locale
+    const formatted = abs.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const sign = showSign ? (amount >= 0 ? '+' : '-') : (amount < 0 ? '-' : '');
+    return `${sign}${symbol}${formatted}`;
+}
+
 async function loadSettings() {
     const user = state.user;
     if (!user) return;
@@ -716,37 +734,71 @@ async function loadSettings() {
     document.getElementById('settings-avatar').src = user.avatar || defaultAvatar(user.displayName);
     document.getElementById('settings-name').textContent = user.displayName;
     document.getElementById('settings-email').textContent = user.email;
-    document.getElementById('settings-joined').textContent = `Member since ${fmtDate(user.createdAt)}`;
+    document.getElementById('settings-joined').textContent = `Bergabung sejak ${fmtDate(user.createdAt)}`;
     document.getElementById('s-balance').value = user.accountBalance || '';
     document.getElementById('s-risk').value = user.riskPercent || '';
     document.getElementById('s-broker').value = user.broker || '';
     document.getElementById('s-timezone').value = user.timezone || 'UTC+7';
 
+    // Set currency select
+    const currencyVal = user.currency || 'USD|$|Dolar Amerika Serikat';
+    const currSel = document.getElementById('s-currency');
+    if (currSel) {
+        currSel.value = currencyVal;
+        updateCurrencyPreview(currencyVal);
+        // Update balance prefix
+        const sym = currencyVal.split('|')[1] || '$';
+        const prefix = document.getElementById('s-balance-prefix');
+        const balLabel = document.getElementById('s-balance-label');
+        if (prefix) prefix.textContent = sym;
+        if (balLabel) balLabel.textContent = `(${currencyVal.split('|')[0]})`;
+    }
+
+    const { symbol } = getCurrency();
+
     // Summary
     const s = state.stats;
     if (s && !s.empty) {
         document.getElementById('settings-summary').innerHTML = `
-      <div style="display:grid;gap:12px;padding:12px 0">
-        <div style="display:flex;justify-content:space-between;font-family:var(--font-data);font-size:0.82rem">
-          <span style="color:var(--text2)">Total Trades</span>
+      <div style="display:grid;gap:10px;padding:12px 0">
+        <div style="display:flex;justify-content:space-between;font-family:var(--fd);font-size:0.82rem">
+          <span style="color:var(--text2)">Total Trade</span>
           <span style="color:var(--text)">${s.total}</span>
         </div>
-        <div style="display:flex;justify-content:space-between;font-family:var(--font-data);font-size:0.82rem">
+        <div style="display:flex;justify-content:space-between;font-family:var(--fd);font-size:0.82rem">
           <span style="color:var(--text2)">Win Rate</span>
-          <span style="color:var(--orange)">${s.winrate}%</span>
+          <span style="color:var(--o)">${s.winrate}%</span>
         </div>
-        <div style="display:flex;justify-content:space-between;font-family:var(--font-data);font-size:0.82rem">
+        <div style="display:flex;justify-content:space-between;font-family:var(--fd);font-size:0.82rem">
           <span style="color:var(--text2)">Total P&L</span>
-          <span style="color:${s.totalPnL >= 0 ? 'var(--green)' : 'var(--red)'}">${s.totalPnL >= 0 ? '+' : ''}$${Math.abs(s.totalPnL).toFixed(2)}</span>
+          <span style="color:${s.totalPnL >= 0 ? 'var(--green)' : 'var(--red)'}">${fmtMoney(s.totalPnL, true)}</span>
         </div>
-        <div style="display:flex;justify-content:space-between;font-family:var(--font-data);font-size:0.82rem">
-          <span style="color:var(--text2)">Account Balance</span>
-          <span style="color:var(--text)">$${(user.accountBalance || 0).toLocaleString()}</span>
+        <div style="display:flex;justify-content:space-between;font-family:var(--fd);font-size:0.82rem">
+          <span style="color:var(--text2)">Saldo Akun</span>
+          <span style="color:var(--text)">${symbol}${(user.accountBalance || 0).toLocaleString('id-ID')}</span>
         </div>
       </div>`;
     } else {
-        document.getElementById('settings-summary').innerHTML = '<div class="empty-state">Belum ada data trading.</div>';
+        document.getElementById('settings-summary').innerHTML = '<div class="empty-state" style="padding:1.5rem 0"><div class="empty-icon">📊</div><div>Belum ada data trading.</div></div>';
     }
+}
+
+function updateCurrencyPreview(val) {
+    const parts = val.split('|');
+    const code = parts[0], symbol = parts[1], name = parts[2] || '';
+    const previewEl = document.getElementById('currency-preview');
+    const infoEl = document.getElementById('currency-info');
+    const flagEl = document.getElementById('currency-flag');
+    if (!previewEl) return;
+
+    // Extract flag emoji from option text
+    const sel = document.getElementById('s-currency');
+    const selectedText = sel?.options[sel?.selectedIndex]?.text || '';
+    const flagMatch = selectedText.match(/(\p{Emoji_Presentation}|\p{Extended_Pictographic})\s*$/u);
+    const flag = flagMatch ? flagMatch[0].trim() : '💱';
+
+    if (flagEl) flagEl.textContent = flag;
+    if (infoEl) infoEl.textContent = `${code} · ${symbol} · ${name}`;
 }
 
 // ══════════════════════════════════════════════════
@@ -1104,6 +1156,27 @@ function bindEvents() {
     // Tutorial events
     initTutorialEvents();
 
+    // Custom pair input — muncul saat pilih "Ketik Pair Sendiri"
+    const pairSelect = document.getElementById('f-pair');
+    const pairCustom = document.getElementById('f-pair-custom');
+    if (pairSelect && pairCustom) {
+        pairSelect.addEventListener('change', () => {
+            if (pairSelect.value === 'CUSTOM') {
+                pairCustom.style.display = 'block';
+                pairCustom.focus();
+                pairCustom.required = true;
+            } else {
+                pairCustom.style.display = 'none';
+                pairCustom.required = false;
+                pairCustom.value = '';
+            }
+        });
+        // Auto uppercase input custom
+        pairCustom.addEventListener('input', () => {
+            pairCustom.value = pairCustom.value.toUpperCase();
+        });
+    }
+
     // Nav links (new .sb-link class)
     document.querySelectorAll('.sb-link').forEach(link => {
         link.addEventListener('click', e => {
@@ -1200,21 +1273,32 @@ function bindEvents() {
     // Trade Form Submit
     document.getElementById('trade-form').addEventListener('submit', async function (e) {
         e.preventDefault();
-        const btn = document.getElementById('form-submit-btn');
-        btn.disabled = true;
-        btn.textContent = 'Saving...';
+        const btn = document.getElementById('submit-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Menyimpan...'; }
 
         const direction = document.getElementById('f-direction').value;
         const result = document.getElementById('f-result').value;
 
-        if (!direction) { toast('Pilih direction (BUY/SELL)', 'error'); btn.disabled = false; btn.textContent = state.editingId ? 'Update Trade' : 'Save Trade'; return; }
-        if (!result) { toast('Pilih hasil trade (WIN/LOSS/BE)', 'error'); btn.disabled = false; btn.textContent = state.editingId ? 'Update Trade' : 'Save Trade'; return; }
+        if (!direction) { toast('Pilih arah trade (BUY/SELL)', 'error'); if (btn) { btn.disabled = false; btn.textContent = 'Simpan Trade'; } return; }
+        if (!result) { toast('Pilih hasil trade (MENANG/KALAH/IMPAS)', 'error'); if (btn) { btn.disabled = false; btn.textContent = 'Simpan Trade'; } return; }
+
+        // Extract pair code — strip deskripsi "— ..." dan handle CUSTOM
+        let rawPair = document.getElementById('f-pair').value;
+        let pairCode = '';
+        if (rawPair === 'CUSTOM') {
+            pairCode = (document.getElementById('f-pair-custom')?.value || '').trim().toUpperCase();
+            if (!pairCode) { toast('Masukkan nama pair kustom kamu', 'error'); if (btn) { btn.disabled = false; btn.textContent = 'Simpan Trade'; } return; }
+        } else {
+            // Ambil hanya bagian sebelum " — " jika ada deskripsi
+            pairCode = rawPair.includes(' — ') ? rawPair.split(' — ')[0].trim() : rawPair.trim();
+        }
+        if (!pairCode) { toast('Pilih pair / instrumen dulu', 'error'); if (btn) { btn.disabled = false; btn.textContent = 'Simpan Trade'; } return; }
 
         const tags = document.getElementById('f-tags').value.split(',').map(t => t.trim()).filter(Boolean);
 
         const payload = {
             date: document.getElementById('f-date').value,
-            pair: document.getElementById('f-pair').value,
+            pair: pairCode,
             direction,
             session: document.getElementById('f-session').value,
             lot: parseFloat(document.getElementById('f-lot').value),
@@ -1314,6 +1398,21 @@ function bindEvents() {
         });
     });
 
+    // Currency select — live preview
+    const currSelect = document.getElementById('s-currency');
+    if (currSelect) {
+        currSelect.addEventListener('change', () => {
+            const val = currSelect.value;
+            updateCurrencyPreview(val);
+            const sym = val.split('|')[1] || '$';
+            const code = val.split('|')[0] || 'USD';
+            const prefix = document.getElementById('s-balance-prefix');
+            const balLabel = document.getElementById('s-balance-label');
+            if (prefix) prefix.textContent = sym;
+            if (balLabel) balLabel.textContent = `(${code})`;
+        });
+    }
+
     // Settings form
     document.getElementById('settings-form').addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -1322,12 +1421,15 @@ function bindEvents() {
                 accountBalance: parseFloat(document.getElementById('s-balance').value),
                 riskPercent: parseFloat(document.getElementById('s-risk').value),
                 broker: document.getElementById('s-broker').value,
-                timezone: document.getElementById('s-timezone').value
+                timezone: document.getElementById('s-timezone').value,
+                currency: document.getElementById('s-currency')?.value || 'USD|$|Dolar Amerika Serikat'
             });
             state.user = user;
-            toast('Settings tersimpan! ✅', 'success');
+            toast('Pengaturan tersimpan! ✅', 'success');
+            // Refresh dashboard to update currency display
+            if (state.stats) renderStats(state.stats);
         } catch (err) {
-            toast('Error saving settings', 'error');
+            toast('Gagal menyimpan pengaturan', 'error');
         }
     });
 

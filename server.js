@@ -23,6 +23,7 @@ const UserSchema = new mongoose.Schema({
     riskPercent: { type: Number, default: 1 },
     broker: { type: String, default: '' },
     timezone: { type: String, default: 'UTC+7' },
+    currency: { type: String, default: 'USD|$|Dolar Amerika Serikat' },
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -430,7 +431,7 @@ app.delete('/api/diary/:id', requireAuth, async (req, res) => {
 
 app.put('/api/user', requireAuth, async (req, res) => {
     try {
-        const allowed = ['accountBalance', 'riskPercent', 'broker', 'timezone'];
+        const allowed = ['accountBalance', 'riskPercent', 'broker', 'timezone', 'currency'];
         const update = {};
         allowed.forEach(k => { if (req.body[k] !== undefined) update[k] = req.body[k]; });
         const user = await User.findByIdAndUpdate(req.user._id, update, { new: true });
