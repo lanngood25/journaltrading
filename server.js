@@ -472,7 +472,7 @@ Selalu akhiri dengan 1 kalimat motivasi singkat.`;
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: promptMap[type] || promptMap.general }
             ],
-            model: 'llama3-8b-8192',
+            model: 'llama-3.3-70b-versatile',
             max_tokens: 500,
             temperature: 0.7
         });
