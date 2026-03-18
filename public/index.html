@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeLog — Professional Trading Journal</title>
+    <title>TradeLog — Jurnal Trading Profesional</title>
+    <meta name="description"
+        content="Jurnal trading terlengkap untuk trader Indonesia. Catat trade, analisis pola, dan dapatkan coaching dari AI.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <style>
+        /* ─────────────────────────────────────────
+       ROOT & RESET
+    ───────────────────────────────────────── */
         *,
         *::before,
         *::after {
@@ -20,74 +25,109 @@
         }
 
         :root {
-            --bg: #050508;
-            --bg2: #0a0a10;
-            --surface: #0e0e16;
-            --card: #111119;
-            --card2: #15151f;
-            --border: #1e1e2e;
-            --orange: #FF6B35;
-            --red: #E63946;
+            --bg: #04040a;
+            --bg2: #080810;
+            --surface: #0d0d18;
+            --card: #111120;
+            --card2: #161628;
+            --border: #1c1c30;
+            --border2: #252540;
+
+            --o: #FF6B35;
+            --o2: #ff8c5a;
+            --og: rgba(255, 107, 53, .1);
+            --og2: rgba(255, 107, 53, .05);
             --green: #00E676;
-            --text: #f0f0f8;
-            --text2: #8080a0;
+            --red: #FF4560;
+            --gold: #FFD60A;
+            --blue: #4B9EFF;
+
+            --text: #f2f2fc;
+            --text2: #7575a0;
+            --text3: #40404e;
+
+            /* Typography */
+            --fs: 'Syne', sans-serif;
+            /* Display — bold, wide */
             --fh: 'Orbitron', monospace;
+            /* Data/tech labels */
             --fd: 'JetBrains Mono', monospace;
             --fb: 'Inter', sans-serif;
+            /* Body */
         }
 
         html {
             scroll-behavior: smooth;
+            font-size: 15px;
         }
 
         body {
             background: var(--bg);
             color: var(--text);
             font-family: var(--fb);
-            font-size: 14px;
-            line-height: 1.6;
+            line-height: 1.65;
             overflow-x: hidden;
         }
 
         a {
             text-decoration: none;
+            color: inherit;
         }
 
+        img {
+            max-width: 100%;
+        }
+
+        /* ─────────────────────────────────────────
+       BG CANVAS
+    ───────────────────────────────────────── */
         #bg-canvas {
             position: fixed;
             inset: 0;
             width: 100%;
             height: 100%;
-            opacity: .2;
+            opacity: .18;
             pointer-events: none;
             z-index: 0;
         }
 
-        .scanlines {
+        /* Noise overlay */
+        body::before {
+            content: '';
             position: fixed;
             inset: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, .06) 2px, rgba(0, 0, 0, .06) 4px);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+            opacity: .4;
             pointer-events: none;
-            z-index: 1;
+            z-index: 0;
         }
 
-        /* NAV */
+        /* ─────────────────────────────────────────
+       NAVBAR
+    ───────────────────────────────────────── */
         nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 100;
-            background: rgba(5, 5, 8, .88);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 107, 53, .1);
+            background: rgba(4, 4, 10, .85);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 107, 53, .08);
+            transition: all .3s;
+        }
+
+        nav.scrolled {
+            background: rgba(4, 4, 10, .95);
+            border-bottom-color: rgba(255, 107, 53, .12);
         }
 
         .nav-inner {
-            max-width: 1160px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
-            height: 64px;
+            height: 68px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -96,115 +136,131 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
-        .logo-icon {
-            font-size: 1.3rem;
-            color: var(--orange);
-            filter: drop-shadow(0 0 6px var(--orange));
+        .logo-hex {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            animation: hex-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes hex-glow {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 4px var(--o));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 12px var(--o));
+            }
         }
 
         .logo-text {
             font-family: var(--fh);
-            font-size: 1rem;
-            letter-spacing: .12em;
+            font-size: .95rem;
+            letter-spacing: .14em;
             font-weight: 700;
+            color: var(--text);
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
         }
 
         .nav-links a {
             color: var(--text2);
             font-size: .85rem;
+            letter-spacing: .03em;
             transition: color .2s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--o);
+            transform: scaleX(0);
+            transition: transform .25s;
+            transform-origin: left;
         }
 
         .nav-links a:hover {
             color: var(--text);
         }
 
+        .nav-links a:hover::after {
+            transform: scaleX(1);
+        }
+
         .nav-cta {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: var(--orange);
+            background: var(--o);
             color: #fff;
             font-weight: 700;
             font-size: .85rem;
-            padding: 9px 18px;
+            padding: 10px 20px;
             border-radius: 8px;
             transition: all .2s;
-            box-shadow: 0 0 20px rgba(255, 107, 53, .3);
+            box-shadow: 0 0 24px rgba(255, 107, 53, .3);
+            letter-spacing: .03em;
         }
 
         .nav-cta:hover {
-            background: #ff8450;
+            background: var(--o2);
             transform: translateY(-1px);
-            box-shadow: 0 0 30px rgba(255, 107, 53, .45);
+            box-shadow: 0 0 36px rgba(255, 107, 53, .5);
         }
 
-        /* SECTIONS */
-        section {
-            position: relative;
-            z-index: 2;
+        .nav-mob-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
         }
 
-        .inner {
-            max-width: 1160px;
-            margin: 0 auto;
-            padding: 0 2rem;
+        .nav-mob-btn span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--text);
+            border-radius: 2px;
+            margin: 5px 0;
+            transition: all .3s;
         }
 
-        .label {
-            font-family: var(--fh);
-            font-size: .65rem;
-            font-weight: 700;
-            letter-spacing: .2em;
-            color: var(--orange);
-            margin-bottom: 1rem;
-        }
-
-        .section-title {
-            font-family: var(--fh);
-            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-            font-weight: 900;
-            letter-spacing: -.02em;
-            color: var(--text);
-            margin-bottom: 1rem;
-            line-height: 1.1;
-        }
-
-        .section-sub {
-            color: var(--text2);
-            font-size: .95rem;
-            line-height: 1.7;
-            max-width: 560px;
-            margin-bottom: 3.5rem;
-        }
-
-        /* TICKER */
+        /* ─────────────────────────────────────────
+       TICKER
+    ───────────────────────────────────────── */
         .ticker {
-            background: rgba(255, 107, 53, .04);
-            border-top: 1px solid rgba(255, 107, 53, .1);
-            border-bottom: 1px solid rgba(255, 107, 53, .1);
+            background: rgba(255, 107, 53, .03);
+            border-top: 1px solid rgba(255, 107, 53, .08);
+            border-bottom: 1px solid rgba(255, 107, 53, .08);
             overflow: hidden;
             padding: 10px 0;
-            margin-top: 64px;
+            position: relative;
+            z-index: 2;
+            margin-top: 68px;
         }
 
-        .ticker-track {
+        .ticker-wrap {
             display: flex;
-            gap: 2.5rem;
+            gap: 3rem;
             width: max-content;
-            animation: ticker 30s linear infinite;
+            animation: ticker 35s linear infinite;
             font-family: var(--fd);
-            font-size: .78rem;
+            font-size: .75rem;
             color: var(--text2);
-            letter-spacing: .04em;
             white-space: nowrap;
         }
 
@@ -218,47 +274,55 @@
             }
         }
 
-        .ticker-track .sep {
-            color: rgba(255, 107, 53, .3);
+        .t-up {
+            color: var(--green);
+            font-weight: 600;
         }
 
-        /* HERO */
-        #hero {
-            padding: 80px 0;
-            min-height: calc(100vh - 104px);
-            display: flex;
-            align-items: center;
+        .t-down {
+            color: var(--red);
+            font-weight: 600;
         }
 
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: center;
-            gap: 4rem;
-            width: 100%;
+        .t-sep {
+            color: rgba(255, 107, 53, .25);
         }
 
-        .badge {
+        /* ─────────────────────────────────────────
+       SECTION UTILITIES
+    ───────────────────────────────────────── */
+        section {
+            position: relative;
+            z-index: 2;
+        }
+
+        .inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .chip {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(255, 107, 53, .08);
-            border: 1px solid rgba(255, 107, 53, .25);
-            color: var(--orange);
-            font-size: .75rem;
-            font-weight: 600;
-            letter-spacing: .08em;
-            padding: 6px 14px;
-            border-radius: 20px;
-            margin-bottom: 1.75rem;
-            animation: fadeUp .6s ease both;
+            gap: 7px;
+            font-family: var(--fh);
+            font-size: .6rem;
+            font-weight: 700;
+            letter-spacing: .2em;
+            color: var(--o);
+            background: var(--og2);
+            border: 1px solid rgba(255, 107, 53, .2);
+            padding: 5px 14px;
+            border-radius: 99px;
+            margin-bottom: 1.25rem;
         }
 
-        .badge-dot {
-            width: 7px;
-            height: 7px;
+        .chip-dot {
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
-            background: var(--orange);
+            background: var(--o);
             animation: blink 2s ease-in-out infinite;
         }
 
@@ -267,7 +331,7 @@
             0%,
             100% {
                 opacity: 1;
-                box-shadow: 0 0 0 0 rgba(255, 107, 53, .5)
+                box-shadow: 0 0 0 0 rgba(255, 107, 53, .6)
             }
 
             50% {
@@ -276,28 +340,105 @@
             }
         }
 
-        h1 {
-            font-family: var(--fh);
-            font-size: clamp(2.4rem, 4vw, 3.8rem);
-            font-weight: 900;
-            line-height: 1.06;
-            letter-spacing: -.025em;
+        .section-tag {
+            font-family: var(--fd);
+            font-size: .65rem;
+            letter-spacing: .18em;
+            color: var(--o);
+            text-transform: uppercase;
+            margin-bottom: .75rem;
+        }
+
+        .section-h {
+            font-family: var(--fs);
+            font-size: clamp(2rem, 3.8vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.12;
+            letter-spacing: -.02em;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .section-sub {
+            color: var(--text2);
+            font-size: .95rem;
+            line-height: 1.75;
+            max-width: 560px;
+            margin-bottom: 3.5rem;
+        }
+
+        /* ─────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────── */
+        #hero {
+            min-height: calc(100vh - 118px);
+            display: flex;
+            align-items: center;
+            padding: 80px 0 60px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 5rem;
+            width: 100%;
+        }
+
+        /* Left */
+        .hero-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            animation: fadeUp .6s ease both;
+        }
+
+        .eyebrow-line {
+            width: 32px;
+            height: 1px;
+            background: var(--o);
+        }
+
+        .eyebrow-text {
+            font-family: var(--fd);
+            font-size: .7rem;
+            color: var(--o);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .hero-h1 {
+            font-family: var(--fs);
+            font-size: clamp(2.8rem, 5vw, 4.8rem);
+            font-weight: 800;
+            line-height: 1.04;
+            letter-spacing: -.03em;
             color: var(--text);
             margin-bottom: 1.5rem;
             animation: fadeUp .7s .1s ease both;
         }
 
-        .accent {
-            color: var(--orange);
-            text-shadow: 0 0 50px rgba(255, 107, 53, .45), 0 0 100px rgba(255, 107, 53, .15);
+        .hero-h1 .line2 {
+            display: block;
+            background: linear-gradient(90deg, var(--o), var(--o2), #ffb347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(255, 107, 53, .4));
         }
 
-        .hero-sub {
+        .hero-h1 .line3 {
+            display: block;
+            color: var(--text);
+        }
+
+        .hero-p {
             font-size: 1rem;
             color: var(--text2);
-            line-height: 1.75;
+            line-height: 1.8;
             max-width: 460px;
-            margin-bottom: 2.25rem;
+            margin-bottom: 2.5rem;
             animation: fadeUp .7s .2s ease both;
         }
 
@@ -306,103 +447,101 @@
             gap: 1rem;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
             animation: fadeUp .7s .3s ease both;
         }
 
-        .btn {
+        .btn-hero {
             display: inline-flex;
             align-items: center;
             gap: 10px;
+            background: var(--o);
+            color: #fff;
             font-weight: 700;
             font-size: .95rem;
-            padding: 14px 28px;
-            border-radius: 10px;
-            transition: all .2s;
-        }
-
-        .btn-primary {
-            background: var(--orange);
-            color: #fff;
-            box-shadow: 0 0 30px rgba(255, 107, 53, .35), 0 4px 20px rgba(255, 107, 53, .2);
+            padding: 15px 32px;
+            border-radius: 12px;
+            box-shadow: 0 0 32px rgba(255, 107, 53, .4), 0 4px 20px rgba(255, 107, 53, .2);
+            transition: all .25s;
             position: relative;
             overflow: hidden;
+            letter-spacing: .02em;
         }
 
-        .btn-primary::before {
+        .btn-hero::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, .1) 0%, transparent 50%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, .12) 0%, transparent 55%);
         }
 
-        .btn-primary:hover {
-            background: #ff8450;
+        .btn-hero:hover {
+            background: var(--o2);
             transform: translateY(-2px);
-            box-shadow: 0 0 40px rgba(255, 107, 53, .5), 0 8px 30px rgba(255, 107, 53, .3);
+            box-shadow: 0 0 44px rgba(255, 107, 53, .55), 0 8px 28px rgba(255, 107, 53, .3);
         }
 
-        .btn-primary .arr {
+        .btn-hero .arr {
+            display: inline-block;
             transition: transform .2s;
         }
 
-        .btn-primary:hover .arr {
+        .btn-hero:hover .arr {
             transform: translateX(4px);
         }
 
-        .btn-ghost {
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             color: var(--text2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px 20px;
             font-size: .9rem;
             font-weight: 500;
+            padding: 15px 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border2);
             transition: all .2s;
         }
 
-        .btn-ghost:hover {
+        .btn-outline:hover {
             color: var(--text);
             border-color: rgba(255, 107, 53, .3);
-            background: rgba(255, 107, 53, .04);
+            background: var(--og2);
         }
 
-        .btn-lg {
-            font-size: 1rem;
-            padding: 16px 36px;
-            border-radius: 12px;
-        }
-
-        .trust {
-            font-size: .78rem;
-            color: var(--text2);
+        .hero-trust {
             display: flex;
             align-items: center;
-            gap: 8px;
-            animation: fadeUp .7s .35s ease both;
-            margin-bottom: 2.5rem;
+            gap: 10px;
+            font-size: .78rem;
+            color: var(--text2);
+            animation: fadeUp .7s .4s ease both;
         }
 
-        .chk {
+        .hero-trust .chk {
             color: var(--green);
             font-size: .7rem;
         }
 
-        .sep2 {
-            color: var(--border);
+        .hero-trust .dot {
+            color: var(--border2);
         }
 
-        .stats-row {
+        /* Mini stat pills */
+        .hero-stats {
             display: flex;
             align-items: center;
-            background: rgba(255, 255, 255, .02);
+            background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
             width: fit-content;
-            animation: fadeUp .7s .45s ease both;
+            margin-top: 2rem;
+            animation: fadeUp .7s .5s ease both;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .4);
         }
 
-        .snum {
+        .hs {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -410,38 +549,38 @@
             gap: 3px;
         }
 
-        .snum-val {
+        .hs-v {
             font-family: var(--fh);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            color: var(--orange);
+            color: var(--o);
             letter-spacing: .04em;
         }
 
-        .snum-lbl {
-            font-size: .65rem;
+        .hs-l {
+            font-family: var(--fd);
+            font-size: .6rem;
             color: var(--text2);
-            letter-spacing: .08em;
-            text-transform: uppercase;
+            letter-spacing: .1em;
             white-space: nowrap;
         }
 
-        .sdiv {
+        .hs-div {
             width: 1px;
-            height: 40px;
+            height: 38px;
             background: var(--border);
-            flex-shrink: 0;
         }
 
-        /* Terminal / right */
+        /* Right — terminal */
         .hero-right {
             position: relative;
+            animation: fadeUp .8s .2s ease both;
         }
 
         .fbadge {
             position: absolute;
-            background: var(--card);
-            border: 1px solid var(--border);
+            background: var(--card2);
+            border: 1px solid var(--border2);
             border-radius: 12px;
             padding: 10px 14px;
             display: flex;
@@ -450,30 +589,31 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, .5);
             z-index: 10;
             white-space: nowrap;
+            backdrop-filter: blur(8px);
         }
 
         .fb1 {
-            top: -16px;
-            left: 12px;
+            top: -20px;
+            left: 10px;
             border-color: rgba(255, 107, 53, .25);
-            animation: f1 4s ease-in-out infinite;
+            animation: flt1 4s ease-in-out infinite;
         }
 
         .fb2 {
             top: 38%;
-            right: 12px;
+            right: 10px;
             border-color: rgba(255, 107, 53, .2);
-            animation: f2 5s ease-in-out infinite 1s;
+            animation: flt2 5s ease-in-out infinite 1s;
         }
 
         .fb3 {
-            bottom: -12px;
-            right: 60px;
+            bottom: -14px;
+            right: 55px;
             border-color: rgba(0, 230, 118, .25);
-            animation: f1 3.5s ease-in-out infinite .5s;
+            animation: flt1 3.5s ease-in-out infinite .5s;
         }
 
-        @keyframes f1 {
+        @keyframes flt1 {
 
             0%,
             100% {
@@ -485,7 +625,7 @@
             }
         }
 
-        @keyframes f2 {
+        @keyframes flt2 {
 
             0%,
             100% {
@@ -497,40 +637,35 @@
             }
         }
 
-        .fi {
+        .fbi {
             font-size: 1.1rem;
             line-height: 1;
         }
 
-        .fi-g {
-            color: var(--green);
-            font-weight: 900;
-        }
-
-        .fv {
+        .fbv {
             font-family: var(--fh);
-            font-size: .78rem;
+            font-size: .76rem;
             font-weight: 700;
             color: var(--text);
-            letter-spacing: .02em;
         }
 
-        .fv-g {
+        .fbv-g {
             color: var(--green);
         }
 
-        .fs {
-            font-size: .65rem;
+        .fbs {
+            font-size: .64rem;
             color: var(--text2);
             margin-top: 1px;
         }
 
+        /* Terminal */
         .terminal {
-            border: 1px solid rgba(255, 107, 53, .2);
-            border-radius: 14px;
+            border: 1px solid rgba(255, 107, 53, .18);
+            border-radius: 16px;
             overflow: hidden;
             background: var(--card);
-            box-shadow: 0 0 0 1px rgba(255, 107, 53, .07), 0 30px 80px rgba(0, 0, 0, .6), 0 0 60px rgba(255, 107, 53, .05);
+            box-shadow: 0 0 0 1px rgba(255, 107, 53, .06), 0 32px 80px rgba(0, 0, 0, .65), 0 0 60px rgba(255, 107, 53, .04);
         }
 
         .term-bar {
@@ -560,13 +695,13 @@
             background: #27c93f
         }
 
-        .term-title {
+        .term-ttl {
             font-family: var(--fd);
-            font-size: .72rem;
+            font-size: .68rem;
             color: var(--text2);
             flex: 1;
             margin-left: 8px;
-            letter-spacing: .04em;
+            letter-spacing: .05em;
         }
 
         .live {
@@ -574,12 +709,12 @@
             align-items: center;
             gap: 5px;
             font-family: var(--fd);
-            font-size: .65rem;
+            font-size: .62rem;
             color: var(--green);
             letter-spacing: .08em;
         }
 
-        .live-dot {
+        .ld {
             width: 6px;
             height: 6px;
             border-radius: 50%;
@@ -603,7 +738,7 @@
             padding: 1rem;
             display: flex;
             flex-direction: column;
-            gap: .75rem;
+            gap: .7rem;
         }
 
         .term-stats {
@@ -619,13 +754,13 @@
             padding: 10px 12px;
         }
 
-        .ts-wr {
-            border-top: 2px solid var(--orange);
+        .ts.wr {
+            border-top: 2px solid var(--o);
         }
 
         .ts-l {
             font-family: var(--fh);
-            font-size: .56rem;
+            font-size: .54rem;
             letter-spacing: .1em;
             color: var(--text2);
             margin-bottom: 4px;
@@ -633,26 +768,26 @@
 
         .ts-v {
             font-family: var(--fd);
-            font-size: 1rem;
+            font-size: .98rem;
             font-weight: 600;
             color: var(--text);
         }
 
-        .ts-g {
+        .ts-v.g {
             color: var(--green);
         }
 
         .ts-bar {
             height: 3px;
             background: var(--border);
-            border-radius: 2px;
-            margin-top: 6px;
+            border-radius: 99px;
+            margin-top: 5px;
         }
 
         .ts-fill {
             height: 100%;
-            background: var(--orange);
-            border-radius: 2px;
+            background: linear-gradient(90deg, #cc4f1a, var(--o));
+            border-radius: 99px;
         }
 
         .term-chart {
@@ -666,16 +801,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 7px;
             font-family: var(--fh);
-            font-size: .56rem;
+            font-size: .54rem;
             letter-spacing: .1em;
             color: var(--text2);
         }
 
         .tag-g {
             font-family: var(--fd);
-            font-size: .62rem;
+            font-size: .58rem;
             padding: 2px 8px;
             border-radius: 4px;
             background: rgba(0, 230, 118, .1);
@@ -698,11 +833,11 @@
             border: 1px solid var(--border);
             border-radius: 6px;
             font-family: var(--fd);
-            font-size: .75rem;
+            font-size: .72rem;
         }
 
         .tb {
-            font-size: .6rem;
+            font-size: .58rem;
             font-weight: 700;
             padding: 2px 7px;
             border-radius: 4px;
@@ -710,15 +845,15 @@
         }
 
         .tbuy {
-            background: rgba(0, 230, 118, .12);
+            background: rgba(0, 230, 118, .1);
             color: var(--green);
-            border: 1px solid rgba(0, 230, 118, .25);
+            border: 1px solid rgba(0, 230, 118, .2);
         }
 
         .tsell {
-            background: rgba(230, 57, 70, .12);
+            background: rgba(255, 69, 96, .1);
             color: var(--red);
-            border: 1px solid rgba(230, 57, 70, .25);
+            border: 1px solid rgba(255, 69, 96, .2);
         }
 
         .tpair {
@@ -729,7 +864,7 @@
 
         .tlot {
             color: var(--text2);
-            font-size: .7rem;
+            font-size: .68rem;
         }
 
         .tpnl {
@@ -748,7 +883,7 @@
         @keyframes fadeUp {
             from {
                 opacity: 0;
-                transform: translateY(18px)
+                transform: translateY(20px)
             }
 
             to {
@@ -757,59 +892,61 @@
             }
         }
 
-        /* FEATURES BENTO */
-        #features {
-            padding: 100px 0;
+        /* ─────────────────────────────────────────
+       FEATURES BENTO
+    ───────────────────────────────────────── */
+        #fitur {
+            padding: 110px 0;
         }
 
         .bento {
             display: grid;
-            grid-template-columns: 1.55fr 1fr 1fr;
+            grid-template-columns: 1.6fr 1fr 1fr;
             gap: 1rem;
         }
 
         .btile {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 1.75rem;
             position: relative;
             overflow: hidden;
-            transition: border-color .2s, transform .2s, box-shadow .2s;
+            transition: border-color .25s, transform .25s, box-shadow .25s;
         }
 
         .btile:hover {
-            border-color: rgba(255, 107, 53, .28);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, .3);
+            border-color: rgba(255, 107, 53, .25);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, .35), 0 0 24px rgba(255, 107, 53, .04);
         }
 
-        .bth {
-            background: linear-gradient(140deg, rgba(255, 107, 53, .07) 0%, var(--card) 55%);
+        .bt-hero {
+            background: linear-gradient(145deg, rgba(255, 107, 53, .08) 0%, var(--card) 50%);
         }
 
-        .btw {
+        .bt-wide {
             grid-column: 2/4;
         }
 
-        .btglow {
+        .bt-glow {
             position: absolute;
-            top: -60px;
-            right: -60px;
-            width: 200px;
-            height: 200px;
+            top: -50px;
+            right: -50px;
+            width: 180px;
+            height: 180px;
             background: radial-gradient(circle, rgba(255, 107, 53, .12) 0%, transparent 70%);
             pointer-events: none;
         }
 
-        .bttag {
+        .bt-tag {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             font-family: var(--fd);
-            font-size: .63rem;
-            color: var(--orange);
-            background: rgba(255, 107, 53, .08);
+            font-size: .6rem;
+            color: var(--o);
+            background: var(--og);
             border: 1px solid rgba(255, 107, 53, .2);
             padding: 3px 10px;
             border-radius: 4px;
@@ -817,68 +954,70 @@
             margin-bottom: 1rem;
         }
 
-        .bti {
+        .bt-icon {
             font-size: 1.75rem;
             margin-bottom: .75rem;
             display: block;
         }
 
         .btile h3 {
-            font-family: var(--fh);
-            font-size: .93rem;
+            font-family: var(--fs);
+            font-size: .95rem;
             font-weight: 700;
-            letter-spacing: .04em;
             color: var(--text);
             margin-bottom: .5rem;
+            letter-spacing: -.01em;
         }
 
         .btile p {
-            font-size: .85rem;
+            font-size: .84rem;
             color: var(--text2);
-            line-height: 1.65;
+            line-height: 1.7;
             margin-bottom: .75rem;
         }
 
-        .ai-demo {
+        /* AI Chat preview */
+        .ai-chat {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 7px;
             margin-top: .75rem;
         }
 
         .ai-sys {
             font-family: var(--fd);
-            font-size: .72rem;
+            font-size: .7rem;
             color: var(--text2);
             background: rgba(255, 255, 255, .03);
             border: 1px solid var(--border);
             padding: 9px 12px;
-            border-radius: 8px;
+            border-radius: 8px 8px 8px 2px;
             line-height: 1.5;
         }
 
         .ai-res {
-            font-size: .82rem;
+            font-size: .8rem;
             color: var(--text);
-            background: rgba(255, 107, 53, .07);
-            border: 1px solid rgba(255, 107, 53, .2);
-            padding: 9px 12px;
-            border-radius: 8px;
-            line-height: 1.55;
+            background: var(--og);
+            border: 1px solid rgba(255, 107, 53, .18);
+            padding: 10px 14px;
+            border-radius: 8px 8px 2px 8px;
+            line-height: 1.6;
         }
 
         .ai-res strong {
-            color: var(--orange);
+            color: var(--o);
         }
 
+        /* Mini bars */
         .bars {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 9px;
             margin-top: .75rem;
         }
 
-        .bar-row {
+        .bar-r {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -887,30 +1026,31 @@
             color: var(--text2);
         }
 
-        .bar-row>span:first-child {
+        .bar-r>span:first-child {
             width: 50px;
             flex-shrink: 0;
         }
 
-        .bar-track {
+        .bar-t {
             flex: 1;
             height: 5px;
             background: var(--border);
-            border-radius: 3px;
+            border-radius: 99px;
             overflow: hidden;
         }
 
-        .bar-fill {
+        .bar-f {
             height: 100%;
-            border-radius: 3px;
+            border-radius: 99px;
         }
 
-        .bar-pct {
+        .bar-p {
             width: 32px;
             text-align: right;
             flex-shrink: 0;
         }
 
+        /* Psych tags */
         .ptags {
             display: flex;
             flex-wrap: wrap;
@@ -920,16 +1060,16 @@
 
         .pt {
             font-family: var(--fd);
-            font-size: .7rem;
+            font-size: .68rem;
             padding: 3px 9px;
             border-radius: 4px;
             font-weight: 600;
         }
 
         .pt-bad {
-            background: rgba(230, 57, 70, .1);
+            background: rgba(255, 69, 96, .1);
             color: var(--red);
-            border: 1px solid rgba(230, 57, 70, .2);
+            border: 1px solid rgba(255, 69, 96, .2);
         }
 
         .pt-good {
@@ -938,6 +1078,7 @@
             border: 1px solid rgba(0, 230, 118, .2);
         }
 
+        /* Podium mini */
         .podium {
             display: flex;
             align-items: flex-end;
@@ -953,30 +1094,30 @@
             gap: 4px;
         }
 
-        .pod-nm {
+        .pod-n {
             font-size: .62rem;
             color: var(--text2);
         }
 
-        .pod-wr {
+        .pod-w {
             font-family: var(--fh);
             font-size: .7rem;
             font-weight: 700;
         }
 
-        .p1 .pod-wr {
+        .p1 .pod-w {
             color: #FFD700
         }
 
-        .p2 .pod-wr {
+        .p2 .pod-w {
             color: #C0C0C0
         }
 
-        .p3 .pod-wr {
+        .p3 .pod-w {
             color: #CD7F32
         }
 
-        .pod-blk {
+        .pod-b {
             width: 52px;
             border-radius: 4px 4px 0 0;
             display: flex;
@@ -988,33 +1129,34 @@
         }
 
         .pb1 {
-            height: 56px;
+            height: 54px;
             background: rgba(255, 215, 0, .12);
             color: #FFD700;
             border: 1px solid rgba(255, 215, 0, .25)
         }
 
         .pb2 {
-            height: 40px;
+            height: 38px;
             background: rgba(192, 192, 192, .1);
             color: #C0C0C0;
             border: 1px solid rgba(192, 192, 192, .2)
         }
 
         .pb3 {
-            height: 28px;
+            height: 26px;
             background: rgba(205, 127, 50, .1);
             color: #CD7F32;
             border: 1px solid rgba(205, 127, 50, .2)
         }
 
-        .dp-entry {
+        /* Diary preview */
+        .dp {
             display: flex;
             gap: 12px;
             align-items: flex-start;
             background: var(--bg2);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 10px 12px;
             margin-top: .75rem;
         }
@@ -1028,21 +1170,23 @@
 
         .dp-date {
             font-family: var(--fd);
-            font-size: .66rem;
-            color: var(--orange);
+            font-size: .64rem;
+            color: var(--o);
             margin-bottom: 3px;
         }
 
-        .dp-text {
-            font-size: .79rem;
+        .dp-txt {
+            font-size: .78rem;
             color: var(--text2);
-            line-height: 1.5;
+            line-height: 1.55;
         }
 
-        /* HOW IT WORKS */
-        #how {
-            padding: 100px 0;
-            background: rgba(255, 255, 255, .015);
+        /* ─────────────────────────────────────────
+       HOW IT WORKS
+    ───────────────────────────────────────── */
+        #cara-kerja {
+            padding: 110px 0;
+            background: var(--surface);
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
         }
@@ -1050,36 +1194,37 @@
         .steps {
             display: flex;
             align-items: flex-start;
-            gap: 1rem;
+            gap: .85rem;
         }
 
         .step {
             flex: 1;
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 14px;
+            border-radius: 18px;
             padding: 2rem;
-            transition: border-color .2s, transform .2s, box-shadow .2s;
+            position: relative;
+            transition: border-color .25s, transform .25s, box-shadow .25s;
         }
 
         .step:hover {
             border-color: rgba(255, 107, 53, .3);
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, .3);
+            transform: translateY(-5px);
+            box-shadow: 0 18px 48px rgba(0, 0, 0, .35);
         }
 
         .step-n {
             font-family: var(--fh);
-            font-size: 2.8rem;
+            font-size: 3.2rem;
             font-weight: 900;
-            color: rgba(255, 107, 53, .1);
+            color: rgba(255, 107, 53, .08);
             line-height: 1;
             margin-bottom: 4px;
             letter-spacing: -.04em;
         }
 
         .step-ic {
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             margin-bottom: 6px;
             line-height: 1;
         }
@@ -1087,25 +1232,24 @@
         .step-line {
             width: 32px;
             height: 2px;
-            background: var(--orange);
-            border-radius: 2px;
-            margin-bottom: .9rem;
+            background: linear-gradient(90deg, var(--o), transparent);
+            border-radius: 99px;
+            margin-bottom: 1rem;
         }
 
         .step h3 {
-            font-family: var(--fh);
-            font-size: .88rem;
+            font-family: var(--fs);
+            font-size: .95rem;
             font-weight: 700;
-            letter-spacing: .05em;
             color: var(--text);
             margin-bottom: .5rem;
         }
 
         .step p {
-            font-size: .85rem;
+            font-size: .83rem;
             color: var(--text2);
-            line-height: 1.65;
-            margin-bottom: .9rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
         }
 
         .step ul {
@@ -1117,7 +1261,7 @@
 
         .step li {
             font-family: var(--fd);
-            font-size: .72rem;
+            font-size: .7rem;
             color: var(--text2);
             padding-left: 14px;
             position: relative;
@@ -1127,27 +1271,29 @@
             content: '▸';
             position: absolute;
             left: 0;
-            color: var(--orange);
-            font-size: .62rem;
+            color: var(--o);
+            font-size: .6rem;
         }
 
         .step-arr {
             font-size: 1.5rem;
-            color: rgba(255, 107, 53, .3);
-            margin-top: 3.5rem;
+            color: rgba(255, 107, 53, .25);
+            margin-top: 3.8rem;
             flex-shrink: 0;
         }
 
-        /* PREVIEW */
+        /* ─────────────────────────────────────────
+       DASHBOARD PREVIEW
+    ───────────────────────────────────────── */
         #preview {
-            padding: 100px 0;
+            padding: 110px 0;
         }
 
         .prev-win {
-            border: 1px solid var(--border);
-            border-radius: 16px;
+            border: 1px solid var(--border2);
+            border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 0 60px rgba(255, 107, 53, .07), 0 40px 80px rgba(0, 0, 0, .6);
+            box-shadow: 0 0 60px rgba(255, 107, 53, .06), 0 48px 96px rgba(0, 0, 0, .6);
         }
 
         .prev-bar {
@@ -1162,7 +1308,7 @@
         .prev-url {
             margin-left: 10px;
             font-family: var(--fd);
-            font-size: .75rem;
+            font-size: .72rem;
             color: var(--text2);
         }
 
@@ -1179,28 +1325,29 @@
             padding: 1.5rem 1rem;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
+            flex-shrink: 0;
         }
 
         .prev-logo {
             font-family: var(--fh);
-            font-size: .7rem;
+            font-size: .68rem;
             font-weight: 700;
             letter-spacing: .1em;
-            color: var(--orange);
+            color: var(--o);
             margin-bottom: 1rem;
         }
 
         .prev-nav {
-            font-size: .74rem;
+            font-size: .72rem;
             color: var(--text2);
             padding: 7px 10px;
             border-radius: 6px;
         }
 
-        .prev-nav.act {
+        .prev-nav.a {
             background: rgba(255, 107, 53, .1);
-            color: var(--orange);
+            color: var(--o);
         }
 
         .prev-main {
@@ -1208,13 +1355,13 @@
             padding: 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: .85rem;
         }
 
         .prev-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: .75rem;
+            gap: .65rem;
         }
 
         .pst {
@@ -1225,12 +1372,12 @@
         }
 
         .pst.wr {
-            border-top: 2px solid var(--orange);
+            border-top: 2px solid var(--o);
         }
 
         .pst-l {
             font-family: var(--fh);
-            font-size: .58rem;
+            font-size: .54rem;
             letter-spacing: .1em;
             color: var(--text2);
             margin-bottom: 4px;
@@ -1238,7 +1385,7 @@
 
         .pst-v {
             font-family: var(--fd);
-            font-size: 1.05rem;
+            font-size: 1rem;
             font-weight: 600;
             color: var(--text);
         }
@@ -1247,27 +1394,27 @@
             color: var(--green)
         }
 
-        .pst-v.o {
-            color: var(--orange)
+        .pst-v.or {
+            color: var(--o)
         }
 
         .pst-bar {
             height: 3px;
             background: var(--border);
-            border-radius: 2px;
-            margin-top: 6px;
+            border-radius: 99px;
+            margin-top: 5px;
         }
 
         .pst-bar div {
             height: 100%;
-            background: var(--orange);
-            border-radius: 2px;
+            background: var(--o);
+            border-radius: 99px;
         }
 
         .prev-charts {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: .75rem;
+            gap: .65rem;
         }
 
         .pcard {
@@ -1278,32 +1425,34 @@
         }
 
         .pcard.ai {
-            border-color: rgba(255, 107, 53, .2);
+            border-color: rgba(255, 107, 53, .18);
         }
 
         .pcard-h {
             font-family: var(--fh);
-            font-size: .6rem;
+            font-size: .56rem;
             letter-spacing: .1em;
             color: var(--text2);
             margin-bottom: 8px;
         }
 
-        .ai-t {
-            font-size: .78rem;
+        .ai-txt {
+            font-size: .76rem;
             color: var(--text2);
-            line-height: 1.6;
+            line-height: 1.65;
         }
 
-        .ai-t span {
-            color: var(--orange);
+        .ai-txt span {
+            color: var(--o);
             font-weight: 600;
         }
 
-        /* TESTIMONIALS */
-        #testi {
-            padding: 100px 0;
-            background: rgba(255, 255, 255, .015);
+        /* ─────────────────────────────────────────
+       TESTIMONIALS
+    ───────────────────────────────────────── */
+        #testimoni {
+            padding: 110px 0;
+            background: var(--surface);
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
         }
@@ -1311,38 +1460,56 @@
         .tgrid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
+            gap: 1.25rem;
         }
 
         .tcard {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 18px;
             padding: 1.75rem;
-            transition: transform .2s, border-color .2s;
+            transition: transform .25s, border-color .25s, box-shadow .25s;
+            position: relative;
         }
 
         .tcard:hover {
-            transform: translateY(-3px);
-            border-color: rgba(255, 107, 53, .2);
+            transform: translateY(-4px);
+            border-color: rgba(255, 107, 53, .22);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, .3);
         }
 
         .tcard.feat {
-            border-color: rgba(255, 107, 53, .3);
-            background: linear-gradient(135deg, rgba(255, 107, 53, .05) 0%, var(--card) 100%);
+            border-color: rgba(255, 107, 53, .25);
+            background: linear-gradient(145deg, rgba(255, 107, 53, .06) 0%, var(--card) 100%);
+        }
+
+        .tcard.feat::before {
+            content: 'PILIHAN EDITOR';
+            position: absolute;
+            top: -1px;
+            right: 1.5rem;
+            font-family: var(--fd);
+            font-size: .56rem;
+            letter-spacing: .1em;
+            color: var(--o);
+            background: var(--card);
+            border: 1px solid rgba(255, 107, 53, .25);
+            border-top: none;
+            padding: 2px 10px;
+            border-radius: 0 0 6px 6px;
         }
 
         .stars {
-            color: var(--orange);
-            font-size: .85rem;
+            color: var(--o);
+            font-size: .8rem;
             margin-bottom: .75rem;
             letter-spacing: 2px;
         }
 
         .tcard>p {
-            font-size: .87rem;
+            font-size: .86rem;
             color: var(--text2);
-            line-height: 1.7;
+            line-height: 1.75;
             margin-bottom: 1.25rem;
             font-style: italic;
         }
@@ -1357,32 +1524,34 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: rgba(255, 107, 53, .15);
+            background: var(--og);
             border: 1px solid rgba(255, 107, 53, .3);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: var(--fh);
-            font-size: .68rem;
+            font-size: .66rem;
             font-weight: 700;
-            color: var(--orange);
+            color: var(--o);
             flex-shrink: 0;
         }
 
         .tnm {
-            font-size: .85rem;
+            font-size: .84rem;
             font-weight: 600;
             color: var(--text);
         }
 
         .trl {
-            font-size: .74rem;
+            font-size: .72rem;
             color: var(--text2);
         }
 
-        /* CTA */
-        #cta {
-            padding: 120px 0;
+        /* ─────────────────────────────────────────
+       CTA SECTION
+    ───────────────────────────────────────── */
+        #mulai {
+            padding: 130px 0;
             text-align: center;
             overflow: hidden;
         }
@@ -1394,37 +1563,44 @@
             transform: translate(-50%, -50%);
             width: 700px;
             height: 500px;
-            background: radial-gradient(ellipse, rgba(255, 107, 53, .12) 0%, transparent 70%);
+            background: radial-gradient(ellipse, rgba(255, 107, 53, .13) 0%, transparent 70%);
             pointer-events: none;
         }
 
-        .cta-in {
+        .cta-inner {
             position: relative;
             z-index: 2;
         }
 
-        .cta-title {
-            font-family: var(--fh);
-            font-size: clamp(2.2rem, 4.5vw, 3.8rem);
-            font-weight: 900;
-            letter-spacing: -.025em;
+        .cta-h {
+            font-family: var(--fs);
+            font-size: clamp(2.4rem, 5vw, 4.2rem);
+            font-weight: 800;
+            letter-spacing: -.03em;
             line-height: 1.1;
             color: var(--text);
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .cta-h .glow {
+            background: linear-gradient(90deg, var(--o), var(--o2), #ffb347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .cta-sub {
             font-size: 1rem;
             color: var(--text2);
-            line-height: 1.7;
-            max-width: 500px;
-            margin: 0 auto 2.5rem;
+            line-height: 1.75;
+            max-width: 520px;
+            margin: 0 auto 2.75rem;
         }
 
         .cta-note {
-            font-size: .77rem;
+            font-size: .75rem;
             color: var(--text2);
-            opacity: .65;
+            opacity: .6;
             margin-top: 1rem;
         }
 
@@ -1432,26 +1608,32 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 2rem;
-            margin-top: 3rem;
-            padding-top: 2rem;
+            gap: 2.5rem;
+            margin-top: 3.5rem;
+            padding-top: 2.5rem;
             border-top: 1px solid var(--border);
+        }
+
+        .cm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
         }
 
         .cm-v {
             font-family: var(--fh);
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            color: var(--orange);
-            letter-spacing: .03em;
+            color: var(--o);
         }
 
         .cm-l {
-            font-size: .68rem;
+            font-family: var(--fd);
+            font-size: .62rem;
             color: var(--text2);
-            letter-spacing: .08em;
+            letter-spacing: .1em;
             text-transform: uppercase;
-            margin-top: 2px;
         }
 
         .cta-sep {
@@ -1459,26 +1641,165 @@
             font-size: 1.5rem;
         }
 
-        /* FOOTER */
-        footer {
-            background: rgba(255, 255, 255, .02);
+        /* ─────────────────────────────────────────
+       CREDIT SECTION (LannGood + Claude.ai)
+    ───────────────────────────────────────── */
+        #kredit {
+            padding: 80px 0 60px;
             border-top: 1px solid var(--border);
-            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .kredit-inner {
+            position: relative;
+            z-index: 2;
+        }
+
+        .kredit-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card);
+            border: 1px solid var(--border2);
+            border-radius: 99px;
+            padding: 8px 20px 8px 10px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .4);
+        }
+
+        .kredit-av {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--o), #ff8c5a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--fh);
+            font-size: .65rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .kredit-badge-text {
+            font-size: .82rem;
+            color: var(--text2);
+        }
+
+        .kredit-badge-text strong {
+            color: var(--text);
+        }
+
+        .kredit-title {
+            font-family: var(--fs);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: .6rem;
+            letter-spacing: -.01em;
+        }
+
+        .kredit-sub {
+            font-size: .85rem;
+            color: var(--text2);
+            line-height: 1.7;
+            max-width: 480px;
+            margin: 0 auto 1.75rem;
+        }
+
+        .kredit-cards {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .kcard {
+            background: var(--card);
+            border: 1px solid var(--border2);
+            border-radius: 14px;
+            padding: 1.25rem 1.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-width: 180px;
+            transition: all .2s;
+        }
+
+        .kcard:hover {
+            border-color: rgba(255, 107, 53, .25);
+            transform: translateY(-2px);
+        }
+
+        .kcard-icon {
+            font-size: 1.6rem;
+            margin-bottom: 2px;
+        }
+
+        .kcard-name {
+            font-family: var(--fs);
+            font-size: .9rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .kcard-role {
+            font-family: var(--fd);
+            font-size: .62rem;
+            color: var(--text2);
+            letter-spacing: .08em;
+        }
+
+        .kcard-link {
+            font-size: .72rem;
+            color: var(--o);
+            margin-top: 2px;
+            transition: opacity .2s;
+        }
+
+        .kcard-link:hover {
+            opacity: .7;
+        }
+
+        .kcard.claude {
+            border-color: rgba(75, 158, 255, .2);
+        }
+
+        .kcard.claude .kcard-name {
+            background: linear-gradient(135deg, #4B9EFF, #8B5CF6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .kcard.claude:hover {
+            border-color: rgba(75, 158, 255, .4);
+        }
+
+        /* ─────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────── */
+        footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
             position: relative;
             z-index: 2;
         }
 
         .foot-in {
-            max-width: 1160px;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: .75rem;
+            gap: .65rem;
         }
 
         .foot-tag {
-            font-size: .82rem;
+            font-size: .78rem;
             color: var(--text2);
         }
 
@@ -1486,7 +1807,7 @@
             display: flex;
             gap: 1rem;
             align-items: center;
-            font-size: .8rem;
+            font-size: .78rem;
             color: var(--text2);
         }
 
@@ -1496,132 +1817,183 @@
         }
 
         .foot-links a:hover {
-            color: var(--orange);
+            color: var(--o);
         }
 
-        /* RESPONSIVE */
-        @media (max-width:1000px) {
+        .foot-copy {
+            font-family: var(--fd);
+            font-size: .62rem;
+            color: var(--text3);
+            letter-spacing: .06em;
+        }
+
+        /* ─────────────────────────────────────────
+       SCROLL REVEAL
+    ───────────────────────────────────────── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 {
+            transition-delay: .1s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: .2s;
+        }
+
+        .reveal-delay-3 {
+            transition-delay: .3s;
+        }
+
+        /* ─────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────── */
+        @media (max-width: 1024px) {
             .hero-grid {
-                grid-template-columns: 1fr
+                grid-template-columns: 1fr;
             }
 
             .hero-right {
-                display: none
+                display: none;
             }
         }
 
-        @media (max-width:860px) {
+        @media (max-width: 880px) {
             .nav-links {
-                display: none
+                display: none;
+            }
+
+            .nav-mob-btn {
+                display: block;
             }
 
             .bento {
-                grid-template-columns: 1fr 1fr
+                grid-template-columns: 1fr 1fr;
             }
 
-            .bth {
-                grid-column: 1/3
+            .bt-hero {
+                grid-column: 1/3;
             }
 
-            .btw {
-                grid-column: 1/3
+            .bt-wide {
+                grid-column: 1/3;
             }
 
             .steps {
-                flex-direction: column
+                flex-direction: column;
             }
 
             .step-arr {
                 transform: rotate(90deg);
-                align-self: center
+                align-self: center;
             }
 
             .tgrid {
-                grid-template-columns: 1fr
+                grid-template-columns: 1fr;
             }
 
             .prev-body {
-                flex-direction: column
+                flex-direction: column;
             }
 
             .prev-sb {
                 width: 100%;
                 flex-direction: row;
                 flex-wrap: wrap;
-                padding: .75rem
+                padding: .75rem;
             }
 
             .prev-stats {
-                grid-template-columns: repeat(2, 1fr)
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .prev-charts {
-                grid-template-columns: 1fr
+                grid-template-columns: 1fr;
             }
 
             .cta-metrics {
                 flex-wrap: wrap;
-                gap: 1rem
+                gap: 1.5rem;
+            }
+
+            .kredit-cards {
+                flex-direction: column;
+                align-items: center;
             }
         }
 
-        @media (max-width:600px) {
+        @media (max-width: 600px) {
             #hero {
-                padding: 70px 0 50px
+                padding: 60px 0 50px;
             }
 
-            h1 {
-                font-size: 2.4rem
+            .hero-h1 {
+                font-size: 2.6rem;
             }
 
             .hero-ctas {
-                flex-direction: column
+                flex-direction: column;
             }
 
-            .btn,
-            .btn-ghost {
+            .btn-hero,
+            .btn-outline {
                 width: 100%;
-                justify-content: center
+                justify-content: center;
             }
 
             .bento {
-                grid-template-columns: 1fr
+                grid-template-columns: 1fr;
             }
 
-            .bth,
-            .btw {
-                grid-column: auto
+            .bt-hero,
+            .bt-wide {
+                grid-column: auto;
             }
 
-            #features,
-            #how,
+            #fitur,
+            #cara-kerja,
             #preview,
-            #testi {
-                padding: 60px 0
+            #testimoni,
+            #mulai {
+                padding: 70px 0;
             }
 
-            .stats-row {
-                display: none
+            .hero-stats {
+                display: none;
             }
         }
     </style>
 </head>
 
 <body>
+
     <canvas id="bg-canvas"></canvas>
-    <div class="scanlines"></div>
 
     <!-- NAV -->
-    <nav>
+    <nav id="navbar">
         <div class="nav-inner">
             <div class="logo">
-                <span class="logo-icon">◈</span>
+                <svg class="logo-hex" viewBox="0 0 32 32" fill="none">
+                    <polygon points="16,2 28,8 28,22 16,30 4,22 4,8" stroke="#FF6B35" stroke-width="1.5" fill="none" />
+                    <polygon points="16,7 23,11 23,20 16,24 9,20 9,11" fill="rgba(255,107,53,0.12)" stroke="#FF6B35"
+                        stroke-width="1" />
+                    <circle cx="16" cy="15.5" r="3" fill="#FF6B35" />
+                </svg>
                 <span class="logo-text">TRADELOG</span>
             </div>
             <div class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#how">How It Works</a>
+                <a href="#fitur">Fitur</a>
+                <a href="#cara-kerja">Cara Kerja</a>
                 <a href="#preview">Preview</a>
+                <a href="#testimoni">Testimoni</a>
             </div>
             <a href="/auth/google" class="nav-cta">
                 <svg width="16" height="16" viewBox="0 0 24 24">
@@ -1634,36 +2006,58 @@
                     <path fill="currentColor"
                         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                 </svg>
-                Get Started Free
+                Mulai Gratis
             </a>
+            <button class="nav-mob-btn" id="mob-btn">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
 
     <!-- TICKER -->
     <div class="ticker">
-        <div class="ticker-track">
-            <span>XAUUSD +2.34%</span><span class="sep">·</span><span>EURUSD +0.78%</span><span class="sep">·</span>
-            <span>BTC/USD +4.12%</span><span class="sep">·</span><span>NAS100 +1.56%</span><span class="sep">·</span>
-            <span>GBP/JPY -0.23%</span><span class="sep">·</span><span>ETH/USD +3.87%</span><span class="sep">·</span>
-            <span>SPX500 +0.91%</span><span class="sep">·</span><span>XAGUSD +1.44%</span><span class="sep">·</span>
-            <span>USDJPY -0.67%</span><span class="sep">·</span><span>XAUUSD +2.34%</span><span class="sep">·</span>
-            <span>EURUSD +0.78%</span><span class="sep">·</span><span>BTC/USD +4.12%</span><span class="sep">·</span>
-            <span>NAS100 +1.56%</span><span class="sep">·</span><span>GBP/JPY -0.23%</span><span class="sep">·</span>
-            <span>ETH/USD +3.87%</span><span class="sep">·</span><span>SPX500 +0.91%</span>
+        <div class="ticker-wrap">
+            <span>XAUUSD</span><span class="t-up">+2.34%</span><span class="t-sep">·</span>
+            <span>EURUSD</span><span class="t-up">+0.78%</span><span class="t-sep">·</span>
+            <span>BTC/USD</span><span class="t-up">+4.12%</span><span class="t-sep">·</span>
+            <span>NAS100</span><span class="t-up">+1.56%</span><span class="t-sep">·</span>
+            <span>GBP/JPY</span><span class="t-down">-0.23%</span><span class="t-sep">·</span>
+            <span>ETH/USD</span><span class="t-up">+3.87%</span><span class="t-sep">·</span>
+            <span>SPX500</span><span class="t-up">+0.91%</span><span class="t-sep">·</span>
+            <span>XAGUSD</span><span class="t-up">+1.44%</span><span class="t-sep">·</span>
+            <span>USDJPY</span><span class="t-down">-0.67%</span><span class="t-sep">·</span>
+            <span>XAUUSD</span><span class="t-up">+2.34%</span><span class="t-sep">·</span>
+            <span>EURUSD</span><span class="t-up">+0.78%</span><span class="t-sep">·</span>
+            <span>BTC/USD</span><span class="t-up">+4.12%</span><span class="t-sep">·</span>
+            <span>NAS100</span><span class="t-up">+1.56%</span><span class="t-sep">·</span>
+            <span>GBP/JPY</span><span class="t-down">-0.23%</span><span class="t-sep">·</span>
+            <span>ETH/USD</span><span class="t-up">+3.87%</span><span class="t-sep">·</span>
+            <span>SPX500</span><span class="t-up">+0.91%</span>
         </div>
     </div>
 
-    <!-- HERO -->
+    <!-- ══ HERO ══ -->
     <section id="hero">
         <div class="inner">
             <div class="hero-grid">
+
+                <!-- LEFT -->
                 <div>
-                    <div class="badge"><span class="badge-dot"></span> ⚡ Powered by Groq AI</div>
-                    <h1>Stop Guessing.<br>Start <span class="accent">Winning</span><br>With Data.</h1>
-                    <p class="hero-sub">The professional trading journal built for serious traders. Log trades in 60s,
-                        uncover hidden patterns, and get AI coaching — all in one powerful dashboard.</p>
+                    <div class="hero-eyebrow">
+                        <div class="eyebrow-line"></div>
+                        <span class="eyebrow-text">⚡ Didukung oleh Groq AI</span>
+                    </div>
+                    <h1 class="hero-h1">
+                        Berhenti Menebak.
+                        <span class="line2">Mulai Menang</span>
+                        <span class="line3">Dengan Data.</span>
+                    </h1>
+                    <p class="hero-p">
+                        Jurnal trading profesional khusus untuk trader Indonesia. Catat setiap trade dalam 60 detik,
+                        temukan pola tersembunyi, dan dapatkan coaching dari AI berbasis data nyata kamu.
+                    </p>
                     <div class="hero-ctas">
-                        <a href="/auth/google" class="btn btn-primary">
+                        <a href="/auth/google" class="btn-hero">
                             <svg width="20" height="20" viewBox="0 0 24 24">
                                 <path fill="currentColor"
                                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -1674,58 +2068,61 @@
                                 <path fill="currentColor"
                                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                             </svg>
-                            Start Free with Google <span class="arr">→</span>
+                            Daftar Gratis via Google <span class="arr">→</span>
                         </a>
-                        <a href="#preview" class="btn-ghost">See the Dashboard</a>
+                        <a href="#preview" class="btn-outline">Lihat Dashboard</a>
                     </div>
-                    <div class="trust">
-                        <span class="chk">✓</span> Free forever <span class="sep2">·</span>
-                        <span class="chk">✓</span> No credit card <span class="sep2">·</span>
-                        <span class="chk">✓</span> 30-second setup
+                    <div class="hero-trust">
+                        <span class="chk">✓</span> Gratis selamanya
+                        <span class="dot">·</span>
+                        <span class="chk">✓</span> Tanpa kartu kredit
+                        <span class="dot">·</span>
+                        <span class="chk">✓</span> Setup 30 detik
                     </div>
-                    <div class="stats-row">
-                        <div class="snum"><span class="snum-val" data-target="12847">0</span><span
-                                class="snum-lbl">Trades Logged</span></div>
-                        <div class="sdiv"></div>
-                        <div class="snum"><span class="snum-val" data-target="68" data-suffix="%">0%</span><span
-                                class="snum-lbl">Avg Winrate</span></div>
-                        <div class="sdiv"></div>
-                        <div class="snum"><span class="snum-val" data-prefix="$" data-target="4.2" data-decimal="1"
-                                data-suffix="M">$0</span><span class="snum-lbl">Profit Tracked</span></div>
-                        <div class="sdiv"></div>
-                        <div class="snum"><span class="snum-val" data-target="2300">0</span><span
-                                class="snum-lbl">Active Traders</span></div>
+                    <div class="hero-stats">
+                        <div class="hs"><span class="hs-v" data-target="12847">0</span><span class="hs-l">Trade
+                                Dicatat</span></div>
+                        <div class="hs-div"></div>
+                        <div class="hs"><span class="hs-v" data-target="68" data-suffix="%">0%</span><span
+                                class="hs-l">Avg Win Rate</span></div>
+                        <div class="hs-div"></div>
+                        <div class="hs"><span class="hs-v" data-prefix="$" data-target="4.2" data-decimal="1"
+                                data-suffix="M">$0</span><span class="hs-l">Profit Terlacak</span></div>
+                        <div class="hs-div"></div>
+                        <div class="hs"><span class="hs-v" data-target="2300">0</span><span class="hs-l">Trader
+                                Aktif</span></div>
                     </div>
                 </div>
 
+                <!-- RIGHT: Terminal -->
                 <div class="hero-right">
-                    <div class="fbadge fb1"><span class="fi">🔥</span>
+                    <div class="fbadge fb1"><span class="fbi">🔥</span>
                         <div>
-                            <div class="fv">7 WIN streak</div>
-                            <div class="fs">Current run</div>
+                            <div class="fbv">7 Streak MENANG</div>
+                            <div class="fbs">Streak berjalan</div>
                         </div>
                     </div>
-                    <div class="fbadge fb2"><span class="fi">⚡</span>
+                    <div class="fbadge fb2"><span class="fbi">⚡</span>
                         <div>
-                            <div class="fv">AI Analysis</div>
-                            <div class="fs">Ready in 1s</div>
+                            <div class="fbv">Analisis AI</div>
+                            <div class="fbs">Siap dalam 1 detik</div>
                         </div>
                     </div>
-                    <div class="fbadge fb3"><span class="fi-g">↑</span>
+                    <div class="fbadge fb3"><span style="color:var(--green);font-weight:900;font-size:1rem">↑</span>
                         <div>
-                            <div class="fv fv-g">+$4,820</div>
-                            <div class="fs">This month</div>
+                            <div class="fbv fbv-g">+$4,820</div>
+                            <div class="fbs">Bulan ini</div>
                         </div>
                     </div>
                     <div class="terminal">
                         <div class="term-bar">
                             <span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span>
-                            <span class="term-title">◈ TRADELOG — Dashboard</span>
-                            <span class="live"><span class="live-dot"></span>LIVE</span>
+                            <span class="term-ttl">◈ TRADELOG — Dashboard</span>
+                            <span class="live"><span class="ld"></span>LIVE</span>
                         </div>
                         <div class="term-body">
                             <div class="term-stats">
-                                <div class="ts ts-wr">
+                                <div class="ts wr">
                                     <div class="ts-l">WIN RATE</div>
                                     <div class="ts-v">71.4%</div>
                                     <div class="ts-bar">
@@ -1734,15 +2131,15 @@
                                 </div>
                                 <div class="ts">
                                     <div class="ts-l">P&L</div>
-                                    <div class="ts-v ts-g">+$4,820</div>
+                                    <div class="ts-v g">+$4,820</div>
                                 </div>
                                 <div class="ts">
-                                    <div class="ts-l">TRADES</div>
+                                    <div class="ts-l">TRADE</div>
                                     <div class="ts-v">49</div>
                                 </div>
                             </div>
                             <div class="term-chart">
-                                <div class="tc-hdr"><span>CUMULATIVE P&L</span><span class="tag-g">▲ All Time</span>
+                                <div class="tc-hdr"><span>KUMULATIF P&L</span><span class="tag-g">▲ Semua Waktu</span>
                                 </div>
                                 <svg viewBox="0 0 400 80" style="width:100%;display:block" preserveAspectRatio="none">
                                     <defs>
@@ -1772,182 +2169,201 @@
                                         fill="none" stroke="#00E676" stroke-width="2.5" stroke-linecap="round"
                                         stroke-linejoin="round" filter="url(#gl)" />
                                     <circle cx="400" cy="3" r="4" fill="#00E676" filter="url(#gl)" />
-                                    <circle cx="400" cy="3" r="7" fill="none" stroke="#00E676" stroke-opacity=".3"
-                                        stroke-width="1.5" />
                                 </svg>
                             </div>
                             <div class="term-trades">
                                 <div class="trow"><span class="tb tbuy">BUY</span><span class="tpair">XAUUSD</span><span
-                                        class="tlot">0.10 lot</span><span class="tpnl pos">+$248.00</span></div>
+                                        class="tlot">0.10 lot</span><span class="tpnl pos">+$248</span></div>
                                 <div class="trow"><span class="tb tsell">SELL</span><span
                                         class="tpair">EURUSD</span><span class="tlot">0.05 lot</span><span
-                                        class="tpnl neg">-$42.00</span></div>
+                                        class="tpnl neg">-$42</span></div>
                                 <div class="trow"><span class="tb tbuy">BUY</span><span class="tpair">NAS100</span><span
-                                        class="tlot">0.02 lot</span><span class="tpnl pos">+$391.00</span></div>
+                                        class="tlot">0.02 lot</span><span class="tpnl pos">+$391</span></div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- FEATURES -->
-    <section id="features">
+    <!-- ══ FITUR ══ -->
+    <section id="fitur">
         <div class="inner">
-            <div class="label">FEATURES</div>
-            <h2 class="section-title">Everything a serious trader needs</h2>
-            <p class="section-sub">Built for Forex, Indices, Crypto & Commodities traders who are ready to stop guessing
-                and start compounding their edge.</p>
+            <div class="section-tag reveal">FITUR UNGGULAN</div>
+            <h2 class="section-h reveal">Semua yang dibutuhkan<br>trader serius</h2>
+            <p class="section-sub reveal">Dibangun khusus untuk trader Forex, Indeks, Kripto & Komoditas Indonesia yang
+                serius membangun edge yang konsisten.</p>
+
             <div class="bento">
-                <div class="btile bth">
-                    <div class="btglow"></div>
-                    <div class="bttag">⚡ GROQ AI</div>
+
+                <div class="btile bt-hero reveal">
+                    <div class="bt-glow"></div>
+                    <div class="bt-tag">⚡ GROQ AI</div>
                     <h3>AI Trading Coach</h3>
-                    <p>Get instant analysis of your psychology patterns, setup quality, and personalized improvement
-                        tips — powered by one of the fastest LLMs on the planet.</p>
-                    <div class="ai-demo">
-                        <div class="ai-sys">Analyzing 49 trades across 8 weeks...</div>
-                        <div class="ai-res">Your XAUUSD London session has an <strong>84% winrate</strong>. You're
-                            leaking $620/month from FOMO trades after 3 PM. Stop trading after 15:00 UTC.</div>
+                    <p>Dapatkan analisis instan tentang pola psikologi, kualitas setup, dan saran peningkatan personal —
+                        didukung salah satu LLM tercepat di dunia.</p>
+                    <div class="ai-chat">
+                        <div class="ai-sys">Menganalisis 49 trade selama 8 minggu...</div>
+                        <div class="ai-res">Sesi London XAUUSD kamu punya <strong>win rate 84%</strong>. Kamu bocor
+                            $620/bulan dari trade FOMO setelah jam 3 sore. Saran: berhenti trading setelah 15:00 UTC.
+                        </div>
                     </div>
                 </div>
-                <div class="btile"><span class="bti">📊</span>
-                    <h3>Deep Analytics</h3>
-                    <p>Winrate by pair, session, day-of-week, setup type. Find your real edge.</p>
+
+                <div class="btile reveal reveal-delay-1">
+                    <span class="bt-icon">📊</span>
+                    <h3>Analitik Mendalam</h3>
+                    <p>Win rate per pair, sesi, hari, dan setup. Temukan edge nyata kamu.</p>
                     <div class="bars">
-                        <div class="bar-row"><span>XAUUSD</span>
-                            <div class="bar-track">
-                                <div class="bar-fill" style="width:84%;background:var(--green)"></div>
-                            </div><span class="bar-pct">84%</span>
+                        <div class="bar-r"><span>XAUUSD</span>
+                            <div class="bar-t">
+                                <div class="bar-f" style="width:84%;background:var(--green)"></div>
+                            </div><span class="bar-p">84%</span>
                         </div>
-                        <div class="bar-row"><span>EURUSD</span>
-                            <div class="bar-track">
-                                <div class="bar-fill" style="width:62%;background:var(--orange)"></div>
-                            </div><span class="bar-pct">62%</span>
+                        <div class="bar-r"><span>EURUSD</span>
+                            <div class="bar-t">
+                                <div class="bar-f" style="width:62%;background:var(--o)"></div>
+                            </div><span class="bar-p">62%</span>
                         </div>
-                        <div class="bar-row"><span>NAS100</span>
-                            <div class="bar-track">
-                                <div class="bar-fill" style="width:45%;background:var(--red)"></div>
-                            </div><span class="bar-pct">45%</span>
+                        <div class="bar-r"><span>NAS100</span>
+                            <div class="bar-t">
+                                <div class="bar-f" style="width:45%;background:var(--red)"></div>
+                            </div><span class="bar-p">45%</span>
                         </div>
                     </div>
                 </div>
-                <div class="btile"><span class="bti">🧠</span>
-                    <h3>Psychology Tracker</h3>
-                    <p>Log your mental state on every trade. See how FOMO and revenge trading hurt your P&L.</p>
-                    <div class="ptags"><span class="pt pt-bad">FOMO −$420</span><span class="pt pt-bad">Revenge
-                            −$280</span><span class="pt pt-good">Disciplined +$960</span><span
-                            class="pt pt-good">Focused +$720</span></div>
+
+                <div class="btile reveal reveal-delay-2">
+                    <span class="bt-icon">🧠</span>
+                    <h3>Lacak Psikologi</h3>
+                    <p>Catat kondisi mental tiap trade. Lihat bagaimana FOMO & revenge trading merugikan P&L kamu.</p>
+                    <div class="ptags">
+                        <span class="pt pt-bad">FOMO −$420</span>
+                        <span class="pt pt-bad">Revenge −$280</span>
+                        <span class="pt pt-good">Disiplin +$960</span>
+                        <span class="pt pt-good">Fokus +$720</span>
+                    </div>
                 </div>
-                <div class="btile"><span class="bti">📸</span>
-                    <h3>Chart Screenshots</h3>
-                    <p>Attach before/after chart images to every trade. Build a visual reference library of your setups
-                        over time.</p>
+
+                <div class="btile reveal reveal-delay-1">
+                    <span class="bt-icon">📸</span>
+                    <h3>Screenshot Chart</h3>
+                    <p>Lampirkan foto chart sebelum & sesudah ke setiap trade. Bangun perpustakaan visual setup kamu
+                        dari waktu ke waktu.</p>
                 </div>
-                <div class="btile"><span class="bti">🏆</span>
-                    <h3>Global Leaderboard</h3>
-                    <p>Compete with traders worldwide. See where your winrate stands.</p>
+
+                <div class="btile reveal reveal-delay-2">
+                    <span class="bt-icon">🏆</span>
+                    <h3>Leaderboard Global</h3>
+                    <p>Bersaing dengan trader di seluruh Indonesia. Lihat posisi win rate kamu.</p>
                     <div class="podium">
                         <div class="pod p2">
-                            <div class="pod-nm">Sarah M.</div>
-                            <div class="pod-wr">78%</div>
-                            <div class="pod-blk pb2">2</div>
+                            <div class="pod-n">Sarah M.</div>
+                            <div class="pod-w">78%</div>
+                            <div class="pod-b pb2">2</div>
                         </div>
                         <div class="pod p1">
-                            <div class="pod-nm">Alex K.</div>
-                            <div class="pod-wr">84%</div>
-                            <div class="pod-blk pb1">1</div>
+                            <div class="pod-n">Alex K.</div>
+                            <div class="pod-w">84%</div>
+                            <div class="pod-b pb1">1</div>
                         </div>
                         <div class="pod p3">
-                            <div class="pod-nm">James R.</div>
-                            <div class="pod-wr">71%</div>
-                            <div class="pod-blk pb3">3</div>
+                            <div class="pod-n">James R.</div>
+                            <div class="pod-w">71%</div>
+                            <div class="pod-b pb3">3</div>
                         </div>
                     </div>
                 </div>
-                <div class="btile btw"><span class="bti">📅</span>
-                    <h3>Trading Diary</h3>
-                    <p>Daily journal with mood tracking, goals, and reflection. The habit that separates consistent pros
-                        from retail traders.</p>
-                    <div class="dp-entry"><span class="dp-mood">😤</span>
+
+                <div class="btile bt-wide reveal">
+                    <span class="bt-icon">📅</span>
+                    <h3>Diary Trading Harian</h3>
+                    <p>Jurnal harian dengan pelacak mood, goals, dan refleksi. Kebiasaan yang memisahkan trader pro dari
+                        trader retail.</p>
+                    <div class="dp">
+                        <span class="dp-mood">😤</span>
                         <div>
-                            <div class="dp-date">Mar 18</div>
-                            <div class="dp-text">Revenge traded after stop-out. Need to walk away after 2 losses. Goal:
-                                max 3 trades per session.</div>
+                            <div class="dp-date">18 Mar 2025</div>
+                            <div class="dp-txt">Revenge trade setelah stop-out. Harus berhenti trading setelah 2 loss
+                                beruntun. Goal: maks 3 trade per sesi.</div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- HOW IT WORKS -->
-    <section id="how">
+    <!-- ══ CARA KERJA ══ -->
+    <section id="cara-kerja">
         <div class="inner">
-            <div class="label">HOW IT WORKS</div>
-            <h2 class="section-title">From first trade to consistent profit</h2>
+            <div class="section-tag reveal">CARA KERJA</div>
+            <h2 class="section-h reveal">Dari trade pertama<br>menuju profit konsisten</h2>
             <div class="steps">
-                <div class="step">
+                <div class="step reveal">
                     <div class="step-n">01</div>
                     <div class="step-ic">📝</div>
                     <div class="step-line"></div>
-                    <h3>Log Every Trade</h3>
-                    <p>Pair, direction, lot, entry/exit, SL/TP, psychology. Takes under 60 seconds.</p>
+                    <h3>Catat Setiap Trade</h3>
+                    <p>Pair, arah, lot, entry/exit, SL/TP, psikologi. Selesai dalam 60 detik.</p>
                     <ul>
-                        <li>30+ pairs & crypto</li>
-                        <li>Before/after chart upload</li>
-                        <li>Psychology & confidence log</li>
+                        <li>30+ pair & kripto</li>
+                        <li>Upload screenshot chart</li>
+                        <li>Log psikologi & kepercayaan diri</li>
                     </ul>
                 </div>
                 <div class="step-arr">→</div>
-                <div class="step">
+                <div class="step reveal reveal-delay-1">
                     <div class="step-n">02</div>
                     <div class="step-ic">🔬</div>
                     <div class="step-line"></div>
-                    <h3>Reveal Hidden Patterns</h3>
-                    <p>Your data reveals the truth. See your best sessions, worst psychology states, and where you're
-                        leaking money.</p>
+                    <h3>Ungkap Pola Tersembunyi</h3>
+                    <p>Data kamu mengungkap kebenaran. Lihat sesi terbaik, kondisi psikologi terburuk, dan di mana kamu
+                        bocor profit.</p>
                     <ul>
-                        <li>Session & DOW heatmaps</li>
-                        <li>Psychology P&L breakdown</li>
-                        <li>Setup performance stats</li>
+                        <li>Heatmap sesi & hari</li>
+                        <li>Breakdown P&L per psikologi</li>
+                        <li>Statistik performa setup</li>
                     </ul>
                 </div>
                 <div class="step-arr">→</div>
-                <div class="step">
+                <div class="step reveal reveal-delay-2">
                     <div class="step-n">03</div>
                     <div class="step-ic">⚡</div>
                     <div class="step-line"></div>
-                    <h3>Get AI Coaching</h3>
-                    <p>Ask the AI to analyze your psychology, spot patterns, and give specific advice based on your
-                        actual trading history.</p>
+                    <h3>Dapat Coaching AI</h3>
+                    <p>Minta AI menganalisis psikologi, menemukan pola, dan memberi saran spesifik berdasarkan history
+                        trading nyata kamu.</p>
                     <ul>
-                        <li>Pattern recognition</li>
-                        <li>Psychology diagnosis</li>
-                        <li>Actionable suggestions</li>
+                        <li>Pengenalan pola</li>
+                        <li>Diagnosis psikologi</li>
+                        <li>Saran yang actionable</li>
                     </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PREVIEW -->
+    <!-- ══ DASHBOARD PREVIEW ══ -->
     <section id="preview">
         <div class="inner">
-            <div class="label">DASHBOARD PREVIEW</div>
-            <h2 class="section-title">Your edge, visualized</h2>
-            <p class="section-sub">A command center for your trading performance. Everything you need, nothing you
-                don't.</p>
-            <div class="prev-win">
-                <div class="prev-bar"><span class="dot dr"></span><span class="dot dy"></span><span
-                        class="dot dg"></span><span class="prev-url">tradelog.app / dashboard</span></div>
+            <div class="section-tag reveal">PREVIEW DASHBOARD</div>
+            <h2 class="section-h reveal">Edge kamu, divisualisasikan</h2>
+            <p class="section-sub reveal">Pusat kendali performa trading kamu. Semua yang kamu butuhkan, tanpa yang
+                tidak perlu.</p>
+            <div class="prev-win reveal">
+                <div class="prev-bar">
+                    <span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span>
+                    <span class="prev-url">tradelog.app / dashboard</span>
+                </div>
                 <div class="prev-body">
                     <div class="prev-sb">
                         <div class="prev-logo">◈ TRADELOG</div>
-                        <div class="prev-nav act">⬡ Dashboard</div>
-                        <div class="prev-nav">⬡ Journal</div>
-                        <div class="prev-nav">⬡ Analytics</div>
+                        <div class="prev-nav a">⬡ Dashboard</div>
+                        <div class="prev-nav">⬡ Jurnal</div>
+                        <div class="prev-nav">⬡ Analitik</div>
                         <div class="prev-nav">⬡ Leaderboard</div>
                     </div>
                     <div class="prev-main">
@@ -1965,16 +2381,17 @@
                             </div>
                             <div class="pst">
                                 <div class="pst-l">STREAK</div>
-                                <div class="pst-v o">🔥 7W</div>
+                                <div class="pst-v or">🔥 7W</div>
                             </div>
                             <div class="pst">
-                                <div class="pst-l">W / L / BE</div>
+                                <div class="pst-l">M / K / BE</div>
                                 <div class="pst-v">35/12/2</div>
                             </div>
                         </div>
                         <div class="prev-charts">
                             <div class="pcard">
-                                <div class="pcard-h">Cumulative P&L</div><svg viewBox="0 0 200 60" style="width:100%">
+                                <div class="pcard-h">Kumulatif P&L</div>
+                                <svg viewBox="0 0 200 60" style="width:100%">
                                     <defs>
                                         <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="0%" stop-color="#00E676" stop-opacity=".3" />
@@ -1990,9 +2407,9 @@
                                 </svg>
                             </div>
                             <div class="pcard ai">
-                                <div class="pcard-h">⚡ AI Insight</div>
-                                <p class="ai-t">Your XAUUSD long setups during London session show an <span>84%
-                                        winrate</span>. Consider increasing position size during 08:00–12:00 GMT.</p>
+                                <div class="pcard-h">⚡ Insight AI</div>
+                                <p class="ai-txt">Setup long XAUUSD kamu di sesi London punya <span>win rate 84%</span>.
+                                    Pertimbangkan menambah ukuran posisi di jam 08:00–12:00 UTC.</p>
                             </div>
                         </div>
                     </div>
@@ -2001,45 +2418,45 @@
         </div>
     </section>
 
-    <!-- TESTIMONIALS -->
-    <section id="testi">
+    <!-- ══ TESTIMONI ══ -->
+    <section id="testimoni">
         <div class="inner">
-            <div class="label">TRADERS SAY</div>
-            <h2 class="section-title">Results speak for themselves</h2>
+            <div class="section-tag reveal">KATA TRADER</div>
+            <h2 class="section-h reveal">Hasilnya berbicara sendiri</h2>
             <div class="tgrid">
-                <div class="tcard">
+                <div class="tcard reveal">
                     <div class="stars">★★★★★</div>
-                    <p>"After 3 months of journaling, I realized I was losing 80% of my NY trades but winning 73% in
-                        London. I stopped trading NY — my winrate jumped from 49% to 67%."</p>
+                    <p>"Setelah 3 bulan journaling, saya sadar kalah 80% di sesi NY tapi menang 73% di London. Saya
+                        berhenti trading NY sama sekali — win rate saya loncat dari 49% ke 67%."</p>
                     <div class="tauthor">
                         <div class="tav">AK</div>
                         <div>
                             <div class="tnm">Alex K.</div>
-                            <div class="trl">Forex Trader · 4 years</div>
+                            <div class="trl">Forex Trader · 4 tahun</div>
                         </div>
                     </div>
                 </div>
-                <div class="tcard feat">
+                <div class="tcard feat reveal reveal-delay-1">
                     <div class="stars">★★★★★</div>
-                    <p>"The AI coach showed me I trade worst when overconfident — and it had the data to prove it. My
-                        P&L during those states was -$2,400. That insight alone was worth everything."</p>
+                    <p>"AI coach menunjukkan saya trading paling buruk saat overconfident — dan ada datanya. P&L saya di
+                        kondisi itu minus $2.400. Insight itu saja sudah worth banget."</p>
                     <div class="tauthor">
                         <div class="tav">SM</div>
                         <div>
                             <div class="tnm">Sarah M.</div>
-                            <div class="trl">Gold & Indices · 6 years</div>
+                            <div class="trl">Emas & Indeks · 6 tahun</div>
                         </div>
                     </div>
                 </div>
-                <div class="tcard">
+                <div class="tcard reveal reveal-delay-2">
                     <div class="stars">★★★★★</div>
-                    <p>"Most journal apps feel like chores. TradeLog actually makes you want to log trades. The
-                        leaderboard keeps me accountable and the analytics section is insane."</p>
+                    <p>"Kebanyakan app jurnal terasa membosankan. TradeLog bikin kamu semangat catat trade. Leaderboard
+                        bikin saya tetap on track dan fitur analitiknya gila."</p>
                     <div class="tauthor">
                         <div class="tav">JR</div>
                         <div>
                             <div class="tnm">James R.</div>
-                            <div class="trl">Crypto Trader · 2 years</div>
+                            <div class="trl">Kripto Trader · 2 tahun</div>
                         </div>
                     </div>
                 </div>
@@ -2047,15 +2464,15 @@
         </div>
     </section>
 
-    <!-- CTA -->
-    <section id="cta">
+    <!-- ══ CTA ══ -->
+    <section id="mulai">
         <div class="cta-glow"></div>
-        <div class="inner cta-in">
-            <div class="label">GET STARTED FREE</div>
-            <h2 class="cta-title">Your edge is hiding<br>in your <span class="accent">data.</span></h2>
-            <p class="cta-sub">Stop guessing. Start knowing. Join thousands of traders already using TradeLog to build
-                consistent, data-driven performance.</p>
-            <a href="/auth/google" class="btn btn-primary btn-lg">
+        <div class="inner cta-inner">
+            <div class="chip reveal"><span class="chip-dot"></span> MULAI SEKARANG — GRATIS</div>
+            <h2 class="cta-h reveal">Edge kamu tersembunyi<br>di dalam <span class="glow">data.</span></h2>
+            <p class="cta-sub reveal">Berhenti menebak. Mulai tahu. Bergabunglah dengan ribuan trader yang sudah
+                menggunakan TradeLog untuk membangun performa trading yang konsisten berbasis data.</p>
+            <a href="/auth/google" class="btn-hero reveal" style="display:inline-flex;margin:0 auto;">
                 <svg width="22" height="22" viewBox="0 0 24 24">
                     <path fill="currentColor"
                         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -2066,52 +2483,93 @@
                     <path fill="currentColor"
                         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                 </svg>
-                Create Free Account — Start in 30s <span class="arr">→</span>
+                Buat Akun Gratis — Mulai dalam 30 Detik <span class="arr">→</span>
             </a>
-            <div class="cta-note">No credit card · Free forever · Google login only takes 5 seconds</div>
-            <div class="cta-metrics">
-                <div>
-                    <div class="cm-v">12,847+</div>
-                    <div class="cm-l">Trades Logged</div>
+            <div class="cta-note reveal">Tanpa kartu kredit · Gratis selamanya · Login Google cuma 5 detik</div>
+            <div class="cta-metrics reveal">
+                <div class="cm">
+                    <div class="cm-v">12.847+</div>
+                    <div class="cm-l">Trade Dicatat</div>
                 </div>
                 <div class="cta-sep">·</div>
-                <div>
+                <div class="cm">
                     <div class="cm-v">68%</div>
-                    <div class="cm-l">Avg Winrate</div>
+                    <div class="cm-l">Avg Win Rate</div>
                 </div>
                 <div class="cta-sep">·</div>
-                <div>
-                    <div class="cm-v">$4.2M+</div>
-                    <div class="cm-l">Profit Tracked</div>
+                <div class="cm">
+                    <div class="cm-v">$4,2 Jt+</div>
+                    <div class="cm-l">Profit Terlacak</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER -->
+    <!-- ══ KREDIT ══ -->
+    <section id="kredit">
+        <div class="inner kredit-inner">
+            <div class="kredit-badge reveal">
+                <div class="kredit-av">LG</div>
+                <span class="kredit-badge-text">Dibuat dengan ❤️ oleh <strong>LannGood</strong></span>
+            </div>
+            <h2 class="kredit-title reveal">Tentang Proyek Ini</h2>
+            <p class="kredit-sub reveal">TradeLog adalah proyek personal yang dibangun dari nol untuk komunitas trader
+                Indonesia. Dibuat oleh seorang trader yang lelah dengan spreadsheet dan app jurnal yang ribet.</p>
+            <div class="kredit-cards">
+                <div class="kcard reveal">
+                    <div class="kcard-icon">👨‍💻</div>
+                    <div class="kcard-name">LannGood</div>
+                    <div class="kcard-role">CREATOR & DEVELOPER</div>
+                    <a href="https://github.com/lanngood25" target="_blank" class="kcard-link">github.com/lanngood25
+                        →</a>
+                </div>
+                <div class="kcard claude reveal reveal-delay-1">
+                    <div class="kcard-icon">🤖</div>
+                    <div class="kcard-name">Claude.ai</div>
+                    <div class="kcard-role">AI DEVELOPMENT PARTNER</div>
+                    <a href="https://claude.ai" target="_blank" class="kcard-link">claude.ai →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ FOOTER ══ -->
     <footer>
         <div class="foot-in">
-            <div class="logo"><span class="logo-icon">◈</span><span class="logo-text">TRADELOG</span></div>
-            <div class="foot-tag">Professional Trading Journal · Powered by AI</div>
-            <div class="foot-links">
-                <a href="#features">Features</a><span>·</span>
-                <a href="#how">How It Works</a><span>·</span>
-                <a href="/auth/google">Sign Up Free</a>
+            <div class="logo">
+                <svg class="logo-hex" viewBox="0 0 32 32" fill="none" style="width:24px;height:24px">
+                    <polygon points="16,2 28,8 28,22 16,30 4,22 4,8" stroke="#FF6B35" stroke-width="1.5" fill="none" />
+                    <circle cx="16" cy="15.5" r="3" fill="#FF6B35" />
+                </svg>
+                <span class="logo-text" style="font-size:.85rem">TRADELOG</span>
             </div>
+            <div class="foot-tag">Jurnal Trading Profesional · Didukung AI · Dibuat oleh Trader, untuk Trader</div>
+            <div class="foot-links">
+                <a href="#fitur">Fitur</a><span>·</span>
+                <a href="#cara-kerja">Cara Kerja</a><span>·</span>
+                <a href="#preview">Preview</a><span>·</span>
+                <a href="#kredit">Tentang</a><span>·</span>
+                <a href="/auth/google">Daftar Gratis</a>
+            </div>
+            <div class="foot-copy">© 2025 TRADELOG · DIBUAT OLEH LANNGOOD · DIBANTU OLEH CLAUDE.AI</div>
         </div>
     </footer>
 
     <script>
-        // BG Canvas
+        /* ── BG CANVAS ── */
         const c = document.getElementById('bg-canvas'), cx = c.getContext('2d');
         function rs() { c.width = innerWidth; c.height = innerHeight; }
         rs(); addEventListener('resize', rs);
-        const pts = Array.from({ length: 55 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35, r: Math.random() * 1.5 + .5, a: Math.random() * .4 + .1 }));
+        const pts = Array.from({ length: 50 }, () => ({
+            x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+            vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3,
+            r: Math.random() * 1.5 + .4, a: Math.random() * .35 + .06
+        }));
         function draw() {
             cx.clearRect(0, 0, c.width, c.height);
-            cx.strokeStyle = 'rgba(255,107,53,.04)'; cx.lineWidth = 1;
-            for (let x = 0; x < c.width; x += 60) { cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, c.height); cx.stroke(); }
-            for (let y = 0; y < c.height; y += 60) { cx.beginPath(); cx.moveTo(0, y); cx.lineTo(c.width, y); cx.stroke(); }
+            cx.strokeStyle = 'rgba(255,107,53,.035)'; cx.lineWidth = 1;
+            for (let x = 0; x < c.width; x += 70) { cx.beginPath(); cx.moveTo(x, 0); cx.lineTo(x, c.height); cx.stroke(); }
+            for (let y = 0; y < c.height; y += 70) { cx.beginPath(); cx.moveTo(0, y); cx.lineTo(c.width, y); cx.stroke(); }
             pts.forEach(p => {
                 p.x += p.vx; p.y += p.vy;
                 if (p.x < 0 || p.x > c.width) p.vx *= -1;
@@ -2121,25 +2579,38 @@
             });
             pts.forEach((p, i) => pts.slice(i + 1).forEach(q => {
                 const d = Math.hypot(p.x - q.x, p.y - q.y);
-                if (d < 120) { cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(q.x, q.y); cx.strokeStyle = `rgba(255,107,53,${(1 - d / 120) * .1})`; cx.lineWidth = .5; cx.stroke(); }
+                if (d < 130) { cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(q.x, q.y); cx.strokeStyle = `rgba(255,107,53,${(1 - d / 130) * .08})`; cx.lineWidth = .5; cx.stroke(); }
             }));
             requestAnimationFrame(draw);
         }
         draw();
 
-        // Counter animation
+        /* ── COUNTER ANIMATION ── */
         setTimeout(() => {
-            document.querySelectorAll('.snum-val').forEach(el => {
+            document.querySelectorAll('.hs-v').forEach(el => {
                 const target = parseFloat(el.dataset.target), suffix = el.dataset.suffix || '', prefix = el.dataset.prefix || '', dec = parseInt(el.dataset.decimal || '0');
-                const dur = 1800, start = Date.now();
+                const dur = 2000, start = Date.now();
                 function tick() {
                     const p = Math.min((Date.now() - start) / dur, 1), ease = 1 - Math.pow(1 - p, 3), v = target * ease;
-                    el.textContent = prefix + (dec > 0 ? v.toFixed(dec) : Math.floor(v).toLocaleString()) + suffix;
+                    el.textContent = prefix + (dec > 0 ? v.toFixed(dec) : Math.floor(v).toLocaleString('id-ID')) + suffix;
                     if (p < 1) requestAnimationFrame(tick);
                 }
                 tick();
             });
-        }, 500);
+        }, 600);
+
+        /* ── NAVBAR SCROLL ── */
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', scrollY > 30);
+        });
+
+        /* ── SCROLL REVEAL ── */
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+            });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
 </body>
 
